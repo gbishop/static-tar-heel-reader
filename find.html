@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="find.css" />
+    <script src="find.js"></script>
+    <title>Find</title>
+  </head>
+
+  <body>
+    <h1>Find</h1>
+
+    <form action="" method="get">
+      <input
+        type="search"
+        value="cat dog"
+        id="search"
+        name="search"
+        placeholder="Enter text to search"
+        title="Enter text to search"
+      />
+      <select id="category" name="category">
+        <option value="">All Topics</option>
+        <option value="Alph">Alphabet</option>
+        <option value="Anim">Animals and Nature</option>
+        <option value="ArtM">Art and Music</option>
+        <option value="Biog">Biographies</option>
+        <option value="Fair">Fairy and Folk Tales</option>
+        <option value="Fict">Fiction</option>
+        <option value="Food">Foods</option>
+        <option value="Heal">Health</option>
+        <option value="Hist">History</option>
+        <option value="Holi">Holidays</option>
+        <option value="Math">Math and Science</option>
+        <option value="Nurs">Nursery Rhymes</option>
+        <option value="Peop">People and Places</option>
+        <option value="Poet">Poetry</option>
+        <option value="Recr">Recreation and Leisure</option>
+         aria-label="Topic"<option value="Spor">Sports</option>
+      </select>
+      <select id="reviewed" name="reviewed">
+        <option value="R">Reviewed only</option>
+        <option value="">Include unreviewed</option>
+      </select>
+      <select id="audience" name="audience">
+        <option value="E">Rated E/Everybody</option>
+        <option value="C">Rated C/Caution</option>
+        <option value="">Any rating</option>
+      </select>
+      <input type="hidden" value="1" id="searchpage" name="page" />
+      <input type="submit" value="Search" />
+    </form>
+
+    <ul id="list"></ul>
+  </body>
+</html>
