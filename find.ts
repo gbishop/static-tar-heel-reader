@@ -16,9 +16,12 @@ import {stem} from 'stemr';
 function getQueryTerms(): string[] {
   const searchBox = document.querySelector('#search') as HTMLInputElement;
   const query = searchBox.value;
-  const pattern = /[a-z]{3,}/gi;
-  const terms = query.match(pattern).map(stem);
-  return terms;
+  if (query.length) {
+    const pattern = /[a-z]{3,}/gi;
+    return query.match(pattern).map(stem);
+  } else {
+    return [];
+  }
 }
 
 async function getIndexForTerm(term: string): Promise<string[]> {
@@ -127,42 +130,83 @@ async function find() {
   }
 }
 
-interface SearchSettings {
+interface SearchState {
   search: string,
   reviewed: boolean,
   category: string,
   audience: string,
-  page: number
+  page: number,
 }
 
-function getSearchSettings(): SearchSettings {
+const defaultSearchState: SearchState = {
+  search: '',
+  reviewed: true,
+  category: '',
+  audience: 'E',
+  page: 1
+}
+
+let searchState = {...defaultSearchState};
+
+function updateState(): void {
   const form: HTMLFormElement = document.querySelector('form');
-  let result: SearchSettings = {
-    search: form.search.value,
-    reviewed: form.reviewed.value == 'R',
-    category: form.category.value,
-    audience: form.audience.value,
-    page: parseInt(form.page.value),
+  const s = searchState;
+  s.search = form.search.value;
+  s.reviewed = form.reviewed.value == 'R';
+  s.category = form.category.value;
+  s.audience = form.audience.value;
+}
+
+function updateControls(form: HTMLFormElement): void {
+  const s = searchState;
+  form.search.value = s.search;
+  form.reviewed.value = s.reviewed ? 'R' : 'U';
+  form.category.value = s.category;
+  form.audience.value = s.audience;
+}
+
+function persistState(): void {
+  updateState();
+  const s = JSON.stringify(searchState);
+  localStorage.setItem('searchState', s);
+  console.log('persist', s);
+}
+
+function restoreState(): void {
+  const s = localStorage.getItem('searchState');
+  console.log('restore', s);
+  if (s) {
+    searchState = JSON.parse(s);
+  } else {
+    searchState = {...defaultSearchState};
   }
-  return result;
-}
-
-function setSearchSettings(v: SearchSettings): void {
-  const form: HTMLFormElement = document.querySelector('form');
-  form.search.value = v.search;
-  form.reviewed.value = v.reviewed ? 'R' : 'U';
-  form.category.value = v.category;
-  form.audience.value = v.audience;
-  form.page.value = v.page;
 }
 
 function init() {
   const form = document.querySelector('form');
   if (form) {
+    restoreState();
+    updateControls(form);
     form.addEventListener('submit', e => {
       e.preventDefault();
       find();
     });
+    form.addEventListener('change', persistState);
+    find();
+  }
+}
+
+function play() {
+  console.log('play');
+  let A = new ArraySet(['000', '001', '010', '100']);
+  let B = new ArraySet(['000', '010', '011', '100']);
+  let C = new Intersection(A, B);
+  let D = new RangeSet('000','099');
+  let E = new Intersection(D, C);
+  let c = E.next();
+  while (c) {
+    console.log(c);
+    c = E.next();
   }
   find();
   let s = getSearchSettings();
