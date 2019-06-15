@@ -13,6 +13,8 @@
 
 import {stem} from 'stemr';
 
+import {BookSet, Intersection, RangeSet, StringSet} from './BookSet';
+
 function getQueryTerms(): string[] {
   const searchBox = document.querySelector('#search') as HTMLInputElement;
   const query = searchBox.value;
@@ -24,19 +26,13 @@ function getQueryTerms(): string[] {
   }
 }
 
-async function getIndexForTerm(term: string): Promise<string[]> {
+async function getIndexForTerm(term: string): Promise<BookSet | null> {
   const resp = await fetch('index/' + term);
   let result;
   if (resp.ok) {
     const text = await resp.text();
     console.log('text', text.length);
-    const N = text.length / 3;
-    result = new Array(N);
-    for (let i = 0; i < N; i++) {
-      result[i] = text.slice(i * 3, i * 3 + 3);
-    }
-  } else {
-    result = [];
+    result = new StringSet(text);
   }
   return result;
 }
@@ -102,22 +98,44 @@ function addBookToPage(book: HTMLElement) {
   }
 }
 
+let ids: BookSet;
+
 async function find() {
   const terms = getQueryTerms();
-  const indexes = [];
-  for (const term of terms) {
-    const index = await getIndexForTerm(term);
-    if (index.length) {
-      indexes.push(index);
-    }
+  if (terms.length) {
+    let tsets = await Promise.all(terms.map(getIndexForTerm));
+    ids = tsets.reduce((p, c) => {
+      if (!p) {
+        return c;
+      } else if (!c) {
+        return p;
+      }
+      return new Intersection(p, c);
+    });
+  } else {
+    // create a RangeSet here to represent all
+    ids = new RangeSet('000', '110');
   }
+  return render();
+}
+
+async function render() {
+  // clear the old ones from the page
   let i = 0;
   const node = document.querySelector('ul');
   if (node) {
     let last;
     while ((last = node.lastChild)) node.removeChild(last);
   }
-  for (const bid of intersectIndexes(indexes)) {
+  const SS = searchState;
+  let bid;
+  if (SS.pages[SS.page]) {
+    bid = ids.skipTo(SS.pages[SS.page]);
+  } else {
+    bid = ids.next();
+  }
+  SS.pages[SS.page] = bid;
+  for (; bid; bid = ids.next()) {
     const book = await getBookCover(bid);
     if (book) {
       i += 1;
@@ -128,14 +146,24 @@ async function find() {
       break;
     }
   }
+  if (bid) {
+    bid = ids.next();
+    SS.pages[SS.page + 1] = bid;
+    persistState();
+  }
+  document.querySelector('#back').classList.toggle('hidden', SS.page <= 0);
+  document
+    .querySelector('#next')
+    .classList.toggle('hidden', !SS.pages[SS.page + 1]);
 }
 
 interface SearchState {
-  search: string,
-  reviewed: boolean,
-  category: string,
-  audience: string,
-  page: number,
+  search: string;
+  reviewed: boolean;
+  category: string;
+  audience: string;
+  page: number;
+  pages: string[];
 }
 
 const defaultSearchState: SearchState = {
@@ -143,8 +171,9 @@ const defaultSearchState: SearchState = {
   reviewed: true,
   category: '',
   audience: 'E',
-  page: 1
-}
+  page: 0,
+  pages: [],
+};
 
 let searchState = {...defaultSearchState};
 
@@ -189,30 +218,26 @@ function init() {
     updateControls(form);
     form.addEventListener('submit', e => {
       e.preventDefault();
+      searchState.pages = [];
+      searchState.page = 0;
+      persistState();
       find();
     });
-    form.addEventListener('change', persistState);
+    form.addEventListener('change', () => {
+      // persistState();
+    });
+    document.querySelector('#next').addEventListener('click', e => {
+      e.preventDefault();
+      searchState.page += 1;
+      render();
+    });
+    document.querySelector('#back').addEventListener('click', e => {
+      e.preventDefault();
+      searchState.page -= 1;
+      render();
+    });
     find();
   }
-}
-
-function play() {
-  console.log('play');
-  let A = new ArraySet(['000', '001', '010', '100']);
-  let B = new ArraySet(['000', '010', '011', '100']);
-  let C = new Intersection(A, B);
-  let D = new RangeSet('000','099');
-  let E = new Intersection(D, C);
-  let c = E.next();
-  while (c) {
-    console.log(c);
-    c = E.next();
-  }
-  find();
-  let s = getSearchSettings();
-  s.page += 1;
-  setSearchSettings(s);
-  console.log(getSearchSettings());
 }
 
 window.addEventListener('load', init);

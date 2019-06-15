@@ -103,3 +103,7 @@ a.back {
 form {
   margin-left: 2em;
 }
+
+a.hidden {
+  display: none;
+}
