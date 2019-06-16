@@ -13,7 +13,13 @@
 
 import {stem} from 'stemr';
 
-import {BookSet, Intersection, RangeSet, StringSet} from './BookSet';
+import {
+  BookSet,
+  Intersection,
+  Difference,
+  RangeSet,
+  StringSet,
+} from './BookSet';
 
 function getQueryTerms(): string[] {
   const searchBox = document.querySelector('#search') as HTMLInputElement;
@@ -102,6 +108,12 @@ let ids: BookSet;
 
 async function find() {
   const terms = getQueryTerms();
+  if (searchState.category) {
+    terms.push(searchState.category);
+  }
+  if (searchState.audience == 'C') {
+    terms.push('CAUTION');
+  }
   if (terms.length) {
     let tsets = await Promise.all(terms.map(getIndexForTerm));
     ids = tsets.reduce((p, c) => {
@@ -112,49 +124,62 @@ async function find() {
       }
       return new Intersection(p, c);
     });
+    if (!ids) {
+      ids = new RangeSet('000', '3K3');
+    }
+    if (searchState.reviewed) {
+      ids = new Intersection(new RangeSet('000', '0I0'), ids);
+    }
   } else {
-    // create a RangeSet here to represent all
-    ids = new RangeSet('000', '110');
+    if (searchState.reviewed) {
+      ids = new RangeSet('000', '0I0');
+    } else {
+      // create a RangeSet here to represent all
+      ids = new RangeSet('000', '3K3');
+    }
+  }
+  if (searchState.audience == 'E') {
+    const caution = await getIndexForTerm('CAUTION');
+    ids = new Difference(ids, caution);
   }
   return render();
 }
 
+function empty(node: HTMLElement) {
+  let last;
+  while ((last = node.lastChild)) node.removeChild(last);
+}
+
+const BPP = 3;
+
 async function render() {
   // clear the old ones from the page
-  let i = 0;
-  const node = document.querySelector('ul');
-  if (node) {
-    let last;
-    while ((last = node.lastChild)) node.removeChild(last);
-  }
+  empty(document.querySelector('ul'));
   const SS = searchState;
+  console.log(SS.page);
+
+  let offset = SS.page * BPP;
   let bid;
-  if (SS.pages[SS.page]) {
-    bid = ids.skipTo(SS.pages[SS.page]);
-  } else {
-    bid = ids.next();
-  }
-  SS.pages[SS.page] = bid;
-  for (; bid; bid = ids.next()) {
-    const book = await getBookCover(bid);
-    if (book) {
-      i += 1;
-      addBookToPage(book);
-    }
-    if (i >= 20) {
-      // figure out how to continue
+  let i;
+  for (i = offset; i < offset + BPP + 1; i++) {
+    bid = SS.pages[i] || ids.next();
+    console.log('bid', bid);
+    if (!bid) {
       break;
     }
+    SS.pages[i] = bid;
+    if (i >= offset + BPP) {
+      break;
+    }
+    const book = await getBookCover(bid);
+    addBookToPage(book);
   }
-  if (bid) {
-    bid = ids.next();
-    SS.pages[SS.page + 1] = bid;
-    persistState();
-  }
+  persistState();
+
   document.querySelector('#back').classList.toggle('hidden', SS.page <= 0);
   document
     .querySelector('#next')
-    .classList.toggle('hidden', !SS.pages[SS.page + 1]);
+    .classList.toggle('hidden', !SS.pages[(SS.page + 1) * BPP]);
 }
 
 interface SearchState {
@@ -189,7 +214,7 @@ function updateState(): void {
 function updateControls(form: HTMLFormElement): void {
   const s = searchState;
   form.search.value = s.search;
-  form.reviewed.value = s.reviewed ? 'R' : 'U';
+  form.reviewed.value = s.reviewed ? 'R' : '';
   form.category.value = s.category;
   form.audience.value = s.audience;
 }
