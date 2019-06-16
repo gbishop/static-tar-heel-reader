@@ -1,12 +1,19 @@
 /* Experiment with a class to represent sets of books */
 
 export interface BookSet {
+  /* next() provides the next book id in sequence or "" when exhausted */
   next: () => string;
+
+  /* skipTo(value) returns the next bid equal to or greater than value
+   * or "" if exhausted */
   skipTo: (value: string) => string;
 }
 
+/* incrementally computes the intersection of two sets */
 export class Intersection implements BookSet {
   constructor(public A: BookSet, public B: BookSet) {}
+
+  /* a helper to advance both sequences until they match */
   align(a: string, b: string): string {
     while (a && b && a != b) {
       if (a < b) {
@@ -18,17 +25,20 @@ export class Intersection implements BookSet {
     return (a && b) || '';
   }
   public next(): string {
+    /* we know we can call next on both because they must have matched
+     * last time */
     let a = this.A.next();
     let b = this.B.next();
     return this.align(a, b);
   }
   public skipTo(v: string): string {
     let a = this.A.skipTo(v);
-    let b = this.B.skipTo(v);
+    let b = this.B.skipTo(a);
     return this.align(a, b);
   }
 }
 
+/* incrementally computes the values in A that are not in B */
 export class Difference implements BookSet {
   constructor(public A: BookSet, public B: BookSet) {}
   public next(): string {
@@ -85,8 +95,11 @@ export class RangeSet implements BookSet {
     return this.current;
   }
   public skipTo(v: string) {
+    if (v < this.start) {
+      v = this.start;
+    }
     this.current = v;
-    if (v > this.stop || v < this.start) {
+    if (v > this.stop) {
       return '';
     }
     return v;
@@ -100,14 +113,15 @@ export class StringSet implements BookSet {
     this.index += 3;
     return this.values.slice(this.index, this.index + 3);
   }
-  public skipTo(v: string) {
-    while (
-      this.index < this.values.length &&
-      this.values.slice(this.index, this.index + 3) < v
-    ) {
-      this.index += 3;
+  public skipTo(t: string) {
+    let c,
+      i = this.index,
+      v = this.values;
+    while ((c = v.slice(i, i + 3)) && c < t) {
+      i += 3;
     }
-    return this.values.slice(this.index, this.index + 3);
+    this.index = i;
+    return c;
   }
 }
 

@@ -37,7 +37,6 @@ async function getIndexForTerm(term: string): Promise<BookSet | null> {
   let result;
   if (resp.ok) {
     const text = await resp.text();
-    console.log('text', text.length);
     result = new StringSet(text);
   }
   return result;
@@ -159,14 +158,12 @@ async function render() {
   // clear the old ones from the page
   empty(document.querySelector('ul'));
   const SS = searchState;
-  console.log(SS.page);
 
   let offset = SS.page * BooksPerPage;
   let bid;
   let i;
   for (i = offset; i < offset + BooksPerPage + 1; i++) {
     bid = SS.pages[i] || ids.next();
-    console.log('bid', bid);
     if (!bid) {
       break;
     }
@@ -226,12 +223,10 @@ function persistState(): void {
   updateState();
   const s = JSON.stringify(searchState);
   localStorage.setItem('searchState', s);
-  console.log('persist', s);
 }
 
 function restoreState(): void {
   const s = localStorage.getItem('searchState');
-  console.log('restore', s);
   if (s) {
     searchState = JSON.parse(s);
   } else {
