@@ -125,16 +125,19 @@ async function find() {
       return new Intersection(p, c);
     });
     if (!ids) {
+      // these numbers should come from a file
       ids = new RangeSet('000', '3K3');
     }
     if (searchState.reviewed) {
+      // these numbers should come from a file
       ids = new Intersection(new RangeSet('000', '0I0'), ids);
     }
   } else {
     if (searchState.reviewed) {
+      // these numbers should come from a file
       ids = new RangeSet('000', '0I0');
     } else {
-      // create a RangeSet here to represent all
+      // these numbers should come from a file
       ids = new RangeSet('000', '3K3');
     }
   }
@@ -150,7 +153,7 @@ function empty(node: HTMLElement) {
   while ((last = node.lastChild)) node.removeChild(last);
 }
 
-const BPP = 3;
+const BooksPerPage = 9;
 
 async function render() {
   // clear the old ones from the page
@@ -158,17 +161,17 @@ async function render() {
   const SS = searchState;
   console.log(SS.page);
 
-  let offset = SS.page * BPP;
+  let offset = SS.page * BooksPerPage;
   let bid;
   let i;
-  for (i = offset; i < offset + BPP + 1; i++) {
+  for (i = offset; i < offset + BooksPerPage + 1; i++) {
     bid = SS.pages[i] || ids.next();
     console.log('bid', bid);
     if (!bid) {
       break;
     }
     SS.pages[i] = bid;
-    if (i >= offset + BPP) {
+    if (i >= offset + BooksPerPage) {
       break;
     }
     const book = await getBookCover(bid);
@@ -179,7 +182,7 @@ async function render() {
   document.querySelector('#back').classList.toggle('hidden', SS.page <= 0);
   document
     .querySelector('#next')
-    .classList.toggle('hidden', !SS.pages[(SS.page + 1) * BPP]);
+    .classList.toggle('hidden', !SS.pages[(SS.page + 1) * BooksPerPage]);
 }
 
 interface SearchState {

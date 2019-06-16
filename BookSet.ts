@@ -7,7 +7,6 @@ export interface BookSet {
 
 export class Intersection implements BookSet {
   constructor(public A: BookSet, public B: BookSet) {}
-  public current: string;
   align(a: string, b: string): string {
     while (a && b && a != b) {
       if (a < b) {
@@ -16,8 +15,7 @@ export class Intersection implements BookSet {
         b = this.B.skipTo(a);
       }
     }
-    this.current = (a && b) || '';
-    return this.current;
+    return (a && b) || '';
   }
   public next(): string {
     let a = this.A.next();
@@ -33,7 +31,6 @@ export class Intersection implements BookSet {
 
 export class Difference implements BookSet {
   constructor(public A: BookSet, public B: BookSet) {}
-  public current: string;
   public next(): string {
     let a = this.A.next();
     let b = this.B.skipTo(a);
@@ -75,7 +72,7 @@ function decode(s: string): number {
 
 export class RangeSet implements BookSet {
   constructor(public start: string, public stop: string) {}
-  public current: string;
+  current: string;
   public next(): string {
     if (!this.current) {
       this.current = this.start;
@@ -93,32 +90,6 @@ export class RangeSet implements BookSet {
       return '';
     }
     return v;
-  }
-}
-
-export class ArraySet implements BookSet {
-  public index = -1;
-  public current: string;
-  constructor(public values: string[]) {}
-  public next(): string {
-    this.index += 1;
-    if (this.index < this.values.length) {
-      this.current = this.values[this.index];
-      return this.current;
-    } else {
-      return '';
-    }
-  }
-  public skipTo(v: string) {
-    while (this.index < this.values.length && this.values[this.index] < v) {
-      this.index += 1;
-    }
-    if (this.index < this.values.length) {
-      this.current = this.values[this.index];
-      return this.current;
-    } else {
-      return '';
-    }
   }
 }
 
@@ -140,4 +111,4 @@ export class StringSet implements BookSet {
   }
 }
 
-export default ArraySet;
+export default BookSet;
