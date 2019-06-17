@@ -1,23 +1,24 @@
-var path = require("path");
+var path = require('path');
 
 module.exports = {
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.js'],
   },
-  mode: "development",
+  mode: 'development',
   entry: {
-    "find": "./find.ts",
+    find: './find.ts',
+    book: './book.ts',
   },
   output: {
-    filename: "[name].js",
+    filename: '[name].js',
     path: path.resolve(__dirname, '.'),
   },
   module: {
-    rules: [
-      { test: /\.ts$/, loader: "ts-loader" }
-    ]
+    rules: [{test: /\.ts$/, loader: 'ts-loader'}],
   },
   devServer: {
+    host: '0.0.0.0',
+    disableHostCheck: true,
     stats: {
       assets: false,
       hash: false,
@@ -35,5 +36,5 @@ module.exports = {
       }
     }
   */
-  }
+  },
 };

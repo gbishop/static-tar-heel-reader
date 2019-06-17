@@ -144,6 +144,10 @@ async function find() {
     const caution = await getIndexForTerm('CAUTION');
     ids = new Difference(ids, caution);
   }
+  const start = searchState.pages[searchState.page * BooksPerPage + 1];
+  if (start) {
+    ids.skipTo(start);
+  }
   return render();
 }
 
@@ -162,13 +166,14 @@ async function render() {
   let offset = SS.page * BooksPerPage;
   let bid;
   let i;
-  for (i = offset; i < offset + BooksPerPage + 1; i++) {
-    bid = SS.pages[i] || ids.next();
+  for (i = 0; i < BooksPerPage + 1; i++) {
+    const o = i + offset;
+    bid = SS.pages[o] || ids.next();
     if (!bid) {
       break;
     }
-    SS.pages[i] = bid;
-    if (i >= offset + BooksPerPage) {
+    SS.pages[o] = bid;
+    if (i >= BooksPerPage) {
       break;
     }
     const book = await getBookCover(bid);
@@ -176,6 +181,7 @@ async function render() {
   }
   persistState();
 
+  // visibility of back and next buttons
   document.querySelector('#back').classList.toggle('hidden', SS.page <= 0);
   document
     .querySelector('#next')
@@ -249,16 +255,20 @@ function init() {
     form.addEventListener('change', () => {
       // persistState();
     });
-    document.querySelector('#next').addEventListener('click', e => {
-      e.preventDefault();
-      searchState.page += 1;
-      render();
-    });
-    document.querySelector('#back').addEventListener('click', e => {
-      e.preventDefault();
-      searchState.page -= 1;
-      render();
-    });
+    document
+      .querySelector('#next')
+      .addEventListener('click', (e: MouseEvent) => {
+        e.preventDefault();
+        searchState.page += 1;
+        render();
+      });
+    document
+      .querySelector('#back')
+      .addEventListener('click', (e: MouseEvent) => {
+        e.preventDefault();
+        searchState.page -= 1;
+        render();
+      });
     find();
   }
 }

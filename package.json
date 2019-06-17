@@ -2,9 +2,9 @@
   "name": "find",
   "version": "1.0.0",
   "main": "find.js",
-  "mode": "development",
   "scripts": {
     "build": "webpack",
+    "production": "webpack --mode=production",
     "start": "webpack-dev-server",
     "tsc": "tsc"
   },
@@ -12,9 +12,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "stylelint": "^10.1.0",
+    "stylelint-config-prettier": "^5.2.0",
+    "stylelint-config-standard": "^18.3.0",
+    "ts-loader": "^6.0.2",
     "typescript": "^3.5.1",
     "webpack": "^4.33.0",
-    "webpack-cli": "^3.3.4"
+    "webpack-cli": "^3.3.4",
+    "webpack-dev-server": "^3.7.1"
   },
   "dependencies": {
     "stemr": "^1.0.0"
