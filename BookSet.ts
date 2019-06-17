@@ -107,7 +107,7 @@ export class RangeSet implements BookSet {
 }
 
 export class StringSet implements BookSet {
-  public index = 0;
+  public index = -3;
   constructor(public values: string) {}
   public next(): string {
     this.index += 3;
