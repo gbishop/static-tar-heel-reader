@@ -63,32 +63,20 @@ export class Difference implements BookSet {
 
 const code = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
-function encode(n: number): string {
-  let r = new Array(3);
-  for (let i = 0; i < 3; i++) {
-    r[2 - i] = code[n % 62];
-    n = (n / 62) | 0;
-  }
-  return r.join('');
-}
-
-function decode(s: string): number {
-  let r = 0;
-  for (let i = 0; i < 3; i++) {
-    r = r * 62 + code.indexOf(s[i]);
-  }
-  return r;
-}
-
 export class RangeSet implements BookSet {
-  constructor(public start: string, public stop: string) {}
+  constructor(
+    public start: string,
+    public stop: string,
+    public digits: number,
+    public base: number,
+  ) {}
   current: string;
   public next(): string {
     if (!this.current) {
       this.current = this.start;
       return this.current;
     }
-    this.current = encode(decode(this.current) + 1);
+    this.current = this.encode(this.decode(this.current) + 1);
     if (this.current > this.stop) {
       return '';
     }
@@ -104,21 +92,40 @@ export class RangeSet implements BookSet {
     }
     return v;
   }
+  encode(n: number): string {
+    let r = new Array(this.digits);
+    for (let i = 0; i < this.digits; i++) {
+      r[2 - i] = code[n % this.base];
+      n = (n / this.base) | 0;
+    }
+    return r.join('');
+  }
+
+  decode(s: string): number {
+    let r = 0;
+    for (let i = 0; i < this.digits; i++) {
+      r = r * this.base + code.indexOf(s[i]);
+    }
+    return r;
+  }
 }
 
 export class StringSet implements BookSet {
-  public index = -3;
-  constructor(public values: string) {}
+  public index: number;
+  constructor(public values: string, public digits: number) {
+    this.index = -digits;
+  }
   public next(): string {
-    this.index += 3;
-    return this.values.slice(this.index, this.index + 3);
+    this.index += this.digits;
+    return this.values.slice(this.index, this.index + this.digits);
   }
   public skipTo(t: string) {
     let c,
-      i = this.index,
-      v = this.values;
-    while ((c = v.slice(i, i + 3)) && c < t) {
-      i += 3;
+      i = Math.max(0, this.index),
+      v = this.values,
+      d = this.digits;
+    while ((c = v.slice(i, i + d)) && c < t) {
+      i += d;
     }
     this.index = i;
     return c;

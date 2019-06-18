@@ -17,8 +17,6 @@ module.exports = {
     rules: [{test: /\.ts$/, loader: 'ts-loader'}],
   },
   devServer: {
-    host: '0.0.0.0',
-    disableHostCheck: true,
     stats: {
       assets: false,
       hash: false,
@@ -27,14 +25,14 @@ module.exports = {
       errorDetails: true,
     },
     overlay: true,
-    /*
-    proxy: {
-      '/[0123]|index': {
-        target: 'https://gb.cs.unc.edu/static/',
+    proxy: [
+      {
+        context: ['/data'],
+        target: 'https://gb.cs.unc.edu/static/tiny',
+        pathRewrite: {'^/data': ''},
         secure: false,
-        changeOrigin: true
-      }
-    }
-  */
+        changeOrigin: true,
+      },
+    ],
   },
 };

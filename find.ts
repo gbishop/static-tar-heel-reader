@@ -11,6 +11,16 @@
  *   quit and remember where we are if we have enough
  */
 
+interface Config {
+  base: number;
+  digits: number;
+  lastReviewed: string;
+  first: string;
+  last: string;
+}
+
+let config: Config;
+
 import {stem} from 'stemr';
 
 import {
@@ -33,11 +43,11 @@ function getQueryTerms(): string[] {
 }
 
 async function getIndexForTerm(term: string): Promise<BookSet | null> {
-  const resp = await fetch('index/' + term);
+  const resp = await fetch('data/index/' + term);
   let result;
   if (resp.ok) {
     const text = await resp.text();
-    result = new StringSet(text);
+    result = new StringSet(text, config.digits);
   }
   return result;
 }
@@ -66,16 +76,15 @@ function intersectIndexes(indexes: string[][]) {
   return indexes.reduce(intersect);
 }
 
-function bidToIndex(bid: string): string {
-  return `${bid[0]}/${bid[1]}/index.html`;
-}
-
 async function getBookCover(bid: string): Promise<HTMLElement | null> {
   // get the prefix of the path for this index
-  const prefix = bid
-    .split('')
-    .join('/')
-    .slice(0, 4);
+  const prefix =
+    'data/' +
+    bid
+      .split('')
+      .slice(0, -1)
+      .join('/') +
+    '/';
   // fetch the index
   const resp = await fetch(prefix + 'index.html');
   // get the html
@@ -125,26 +134,39 @@ async function find() {
     });
     if (!ids) {
       // these numbers should come from a file
-      ids = new RangeSet('000', '3K3');
+      ids = new RangeSet(config.first, config.last, config.digits, config.base);
     }
     if (searchState.reviewed) {
       // these numbers should come from a file
-      ids = new Intersection(new RangeSet('000', '0I0'), ids);
+      ids = new Intersection(
+        new RangeSet(
+          config.first,
+          config.lastReviewed,
+          config.digits,
+          config.base,
+        ),
+        ids,
+      );
     }
   } else {
     if (searchState.reviewed) {
       // these numbers should come from a file
-      ids = new RangeSet('000', '0I0');
+      ids = new RangeSet(
+        config.first,
+        config.lastReviewed,
+        config.digits,
+        config.base,
+      );
     } else {
       // these numbers should come from a file
-      ids = new RangeSet('000', '3K3');
+      ids = new RangeSet(config.first, config.last, config.digits, config.base);
     }
   }
   if (searchState.audience == 'E') {
     const caution = await getIndexForTerm('CAUTION');
     ids = new Difference(ids, caution);
   }
-  const start = searchState.pages[searchState.page * BooksPerPage + 1];
+  const start = searchState.pages[searchState.pages.length - 1];
   if (start) {
     ids.skipTo(start);
   }
@@ -240,7 +262,9 @@ function restoreState(): void {
   }
 }
 
-function init() {
+async function init() {
+  config = await (await fetch('/data/config.json')).json();
+
   const form = document.querySelector('form');
   if (form) {
     restoreState();
