@@ -27,9 +27,8 @@ module.exports = {
     overlay: true,
     proxy: [
       {
-        context: ['/data'],
+        context: ['/content', 'config.json'],
         target: 'https://gb.cs.unc.edu/static/tiny',
-        pathRewrite: {'^/data': ''},
         secure: false,
         changeOrigin: true,
       },

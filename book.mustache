@@ -1,1 +1,36 @@
-../static/book.mustache
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../book.css">
+    <script src="../../book.js"></script>
+    <title>{{title}}</title>
+</head>
+
+<body>
+    {{#pages}}
+    <section id="{{id}}">
+        {{#pageno}}
+        <span>{{pageno}}</span>
+        {{/pageno}}
+        {{#author}}
+        <h1>{{title}}</h1>
+        <p id="author">{{author}}</p>
+        {{/author}}
+        <img src="{{image}}">
+        {{#text}}
+        <p>{{text}}</p>
+        {{/text}}
+        <a class="back" href="{{back}}">Back</a>
+        <a class="next" href="{{next}}">Next</a>
+    </section>
+    {{/pages}}
+
+    <section id="done">
+        <a href="{{start}}">Read this book again</a>
+        <a href="{{index}}">Read another book</a>
+    </section>
+</body>
+
+</html>

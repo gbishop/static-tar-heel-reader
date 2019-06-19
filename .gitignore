@@ -1,14 +1,6 @@
-out/*
 *.sqlite
 *.gz
 *.swp
-0
-1
-2
-3
-4
-index
 node_modules
-book.css
 *.js
 *.js.map

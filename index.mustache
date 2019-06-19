@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../index.css">
+    <script src="../../index.js"></script>
+    <title>{{name}}</title>
+</head>
+
+<body>
+    <ul>
+    {{#books}}
+        <li id="{{id}}">
+            <a href="{{link}}.html#p1" class="{{icons}}">
+                <h1>{{title}}</h1>
+                <p>{{author}}</p>
+                <img src="{{image}}">
+                <span>{{pages}}</span>
+            </a>
+        </li>
+    {{/books}}
+    </ul>
+    {{#back}}
+    <a class="back" href="{{back}}">Back</a>
+    {{/back}}
+    {{#next}}
+    <a class="next" href="{{next}}">Next</a>
+    {{/next}}
+</body>
+
+</html>

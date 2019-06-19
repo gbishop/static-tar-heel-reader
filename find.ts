@@ -43,7 +43,7 @@ function getQueryTerms(): string[] {
 }
 
 async function getIndexForTerm(term: string): Promise<BookSet | null> {
-  const resp = await fetch('data/index/' + term);
+  const resp = await fetch('content/index/' + term);
   let result;
   if (resp.ok) {
     const text = await resp.text();
@@ -79,7 +79,7 @@ function intersectIndexes(indexes: string[][]) {
 async function getBookCover(bid: string): Promise<HTMLElement | null> {
   // get the prefix of the path for this index
   const prefix =
-    'data/' +
+    'content/' +
     bid
       .split('')
       .slice(0, -1)
@@ -263,7 +263,7 @@ function restoreState(): void {
 }
 
 async function init() {
-  config = await (await fetch('/data/config.json')).json();
+  config = await (await fetch('content/config.json')).json();
 
   const form = document.querySelector('form');
   if (form) {

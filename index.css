@@ -1,0 +1,95 @@
+html {
+    font-size: 16px;
+}
+
+@media screen and (min-width: 320px) {
+    html {
+        font-size: calc(16px + 5 * ((100vw - 320px) / 680));
+    }
+}
+
+ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+li {
+    width: 11em;
+    height: 11em;
+    overflow: hidden;
+    border: 1px solid black;
+    border-radius: 0.25em;
+    text-align: center;
+    position: relative;
+    margin: 0.1em;
+    box-shadow: 0.1em 0.1em 0.1em #aaa;
+}
+
+span {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 1em;
+    font-size: 0.6em;
+}
+
+p {
+    font-size: 0.8em;
+}
+
+h1 {
+    font-size: 1em;
+    margin-top: 0;
+}
+
+a {
+    display: block;
+    text-decoration: none;
+    height: 100%;
+    color: inherit;
+}
+
+img {
+    flex: 1;
+    object-fit: contain;
+    min-height: 0;
+    height: 6em;
+    max-width: 6em;
+}
+
+a.R {
+    background: no-repeat bottom 1em left 1em url(https://tarheelreader.org/themeV1/images/reviewed_t.png);
+}
+
+a.C {
+    background: no-repeat bottom 2em left 1em url(https://tarheelreader.org/themeV1/images/caution_t.png);
+}
+
+a.CR {
+    background: no-repeat bottom 1em left 1em url(https://tarheelreader.org/themeV1/images/reviewed_t.png),
+                no-repeat bottom 2em left 1em url(https://tarheelreader.org/themeV1/images/caution_t.png);
+}
+
+a.next,
+a.back {
+    width: 6vw;
+    height: 3vw;
+    font-size: 1.5vw;
+    display: block;
+    border: 1px solid black;
+    border-radius: 0.5em;
+    text-align: center;
+    padding: 3em 0 1em;
+    text-decoration: none;
+}
+
+a.next {
+    background: no-repeat top/3em url(https://tarheelreader.org/themeV1/images/NextArrow.png);
+    float: right;
+}
+
+a.back {
+    background: no-repeat top/3em url(https://tarheelreader.org/themeV1/images/BackArrow.png);
+    float: left;
+}
