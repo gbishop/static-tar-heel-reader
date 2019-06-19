@@ -107,3 +107,8 @@ select {
 a.hidden {
   display: none;
 }
+
+.selected {
+  border-color: red !important;
+  box-shadow: 0em 0em 3em;
+}

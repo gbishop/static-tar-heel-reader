@@ -12,13 +12,14 @@
  */
 
 interface Config {
-  base: number;
-  digits: number;
-  lastReviewed: string;
-  first: string;
-  last: string;
+  base: number; // base of the encoding used for ids
+  digits: number; // number of digits in each id
+  lastReviewed: string; // id of last reviewed book
+  first: string; // id of first book
+  last: string; // id of last book
 }
 
+// load this down below in init
 let config: Config;
 
 import {stem} from 'stemr';
@@ -178,7 +179,7 @@ function empty(node: HTMLElement) {
   while ((last = node.lastChild)) node.removeChild(last);
 }
 
-const BooksPerPage = 9;
+const BooksPerPage = 12;
 
 async function render() {
   // clear the old ones from the page
@@ -262,6 +263,39 @@ function restoreState(): void {
   }
 }
 
+/* allow switch (keyboard) selection of books */
+function moveToNext() {
+  // get the currently selected if any
+  const selected = document.querySelector('.selected');
+  // get all the items we can select
+  const selectable = document.querySelectorAll(
+    'li, a#back:not(.hidden), a#next:not(.hidden)',
+  );
+  // assume the first
+  let next = 0;
+  // if was selected, unselect it and compute the index of the next one
+  if (selected) {
+    selected.classList.remove('selected');
+    next = ([].indexOf.call(selectable, selected) + 1) % selectable.length;
+  }
+  // mark the new one selected
+  selectable[next].classList.add('selected');
+  // make sure it is visible
+  selectable[next].scrollIntoView({
+    behavior: 'smooth',
+    block: 'nearest',
+    inline: 'nearest',
+  });
+}
+
+/* click the currently selected link */
+function activateCurrent() {
+  const selected = document.querySelector('.selected a, a.selected');
+  if (selected) {
+    (selected as HTMLAnchorElement).click();
+  }
+}
+
 async function init() {
   config = await (await fetch('content/config.json')).json();
 
@@ -293,6 +327,15 @@ async function init() {
         searchState.page -= 1;
         render();
       });
+    window.addEventListener('keydown', e => {
+      if (e.code == 'ArrowRight' || e.code == 'Space') {
+        e.preventDefault();
+        moveToNext();
+      } else if (e.code == 'ArrowLeft' || e.code == 'Enter') {
+        e.preventDefault();
+        activateCurrent();
+      }
+    });
     find();
   }
 }

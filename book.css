@@ -88,3 +88,8 @@ span {
   font-size: 1em;
   padding: 1em;
 }
+
+.selected {
+  border-color: red !important;
+  box-shadow: 0em 0em 3em !important;
+}
