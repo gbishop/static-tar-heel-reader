@@ -6,15 +6,20 @@
     "build": "webpack",
     "production": "webpack --mode=production",
     "start": "webpack-dev-server",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "test": "jest"
   },
+  "test": "jest",
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^24.0.15",
+    "jest": "^24.8.0",
     "stylelint": "^10.1.0",
     "stylelint-config-prettier": "^5.2.0",
     "stylelint-config-standard": "^18.3.0",
+    "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.2",
     "typescript": "^3.5.1",
     "webpack": "^4.33.0",

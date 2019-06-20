@@ -265,7 +265,7 @@ os.makedirs(WOUT, exist_ok=True)
 for word in wordToSlugs.keys():
     if len(word) < 3:
         continue
-    ids = [bookmap[slug][0] for slug in wordToSlugs[word]]
+    ids = sorted([bookmap[slug][0] for slug in wordToSlugs[word]])
     with open(osp.join(WOUT, word), "wt", encoding="utf-8") as fp:
         fp.write("".join(ids))
 
