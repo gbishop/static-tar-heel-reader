@@ -313,20 +313,16 @@ async function init() {
     form.addEventListener('change', () => {
       // persistState();
     });
-    document
-      .querySelector('#next')
-      .addEventListener('click', (e: MouseEvent) => {
-        e.preventDefault();
-        searchState.page += 1;
-        render();
-      });
-    document
-      .querySelector('#back')
-      .addEventListener('click', (e: MouseEvent) => {
-        e.preventDefault();
-        searchState.page -= 1;
-        render();
-      });
+    document.querySelector('#next').addEventListener('click', e => {
+      e.preventDefault();
+      searchState.page += 1;
+      render();
+    });
+    document.querySelector('#back').addEventListener('click', e => {
+      e.preventDefault();
+      searchState.page -= 1;
+      render();
+    });
     window.addEventListener('keydown', e => {
       if (e.code == 'ArrowRight' || e.code == 'Space') {
         e.preventDefault();
