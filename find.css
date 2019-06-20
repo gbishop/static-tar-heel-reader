@@ -33,6 +33,7 @@ p {
 h1 {
   font-size: 1em;
   margin-top: 0;
+  text-align: center;
 }
 
 a {
@@ -111,4 +112,31 @@ a.hidden {
 .selected {
   border-color: red !important;
   box-shadow: 0em 0em 3em;
+}
+
+details {
+  position: absolute;
+  background-color: white;
+  color: black;
+  z-index: 10;
+}
+
+details div {
+  border: 1px solid black;
+  padding: 1em;
+  box-shadow: 0.2em 0.2em 0.2em black;
+}
+
+details label {
+  display: block;
+}
+
+details input {
+  width: 2em;
+}
+
+summary img {
+  width: 1.5em;
+  height: 1.5em;
+  margin-left: -0.5em;
 }

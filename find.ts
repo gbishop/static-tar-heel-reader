@@ -179,7 +179,7 @@ function empty(node: HTMLElement) {
   while ((last = node.lastChild)) node.removeChild(last);
 }
 
-const BooksPerPage = 12;
+let BooksPerPage = 12;
 
 async function render() {
   // clear the old ones from the page
@@ -289,9 +289,10 @@ function moveToNext() {
 }
 
 /* click the currently selected link */
-function activateCurrent() {
+function activateCurrent(e: KeyboardEvent) {
   const selected = document.querySelector('.selected a, a.selected');
   if (selected) {
+    e.preventDefault();
     (selected as HTMLAnchorElement).click();
   }
 }
@@ -324,13 +325,39 @@ async function init() {
       render();
     });
     window.addEventListener('keydown', e => {
+      console.log('kd', e);
       if (e.code == 'ArrowRight' || e.code == 'Space') {
         e.preventDefault();
         moveToNext();
       } else if (e.code == 'ArrowLeft' || e.code == 'Enter') {
-        e.preventDefault();
-        activateCurrent();
+        activateCurrent(e);
       }
+    });
+    document
+      .querySelector('select[name=page]')
+      .addEventListener('change', e => {
+        console.log(e);
+        document.documentElement.style.setProperty(
+          '--page-color',
+          (e.target as HTMLInputElement).value,
+        );
+      });
+    document
+      .querySelector('select[name=text]')
+      .addEventListener('change', e => {
+        console.log(e);
+        document.documentElement.style.setProperty(
+          '--text-color',
+          (e.target as HTMLInputElement).value,
+        );
+      });
+    document.querySelector('input[name=bpp]').addEventListener('change', e => {
+      console.log(e);
+      let newbpp = parseInt((e.target as HTMLInputElement).value);
+      searchState.page = Math.floor((searchState.page * BooksPerPage) / newbpp);
+      BooksPerPage = newbpp;
+      persistState();
+      render();
     });
     find();
   }

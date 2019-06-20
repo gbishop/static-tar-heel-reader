@@ -34,6 +34,8 @@ a.back {
   position: fixed;
   bottom: 0;
   text-decoration: none;
+  background-color: var(--page-color) !important;
+  color: var(--text-color) !important;
 }
 
 a.next {
@@ -61,8 +63,8 @@ section#done {
   width: 18em;
   border: 1px solid black;
   box-shadow: 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.4);
-  color: black;
-  background-color: white;
+  color: var(--text-color);
+  background-color: var(--page-color);
 }
 
 #done a:hover {
