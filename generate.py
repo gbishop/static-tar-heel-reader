@@ -16,11 +16,11 @@ import aspell
 from spellchecker import SpellChecker
 import contractions
 import pandas as pd
-import Args
+import myArgs
 import math
 from sqlitedict import SqliteDict
 
-args = Args.Parse(base=16, Nselect=100, minPages=6, maxPages=20, out=str)
+args = myArgs.Parse(base=16, Nselect=100, minPages=6, maxPages=20, out=str)
 
 # get all the books
 books = json.load(gzip.open("data/books.json.gz", "rt", encoding="utf-8"))
