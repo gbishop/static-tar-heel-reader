@@ -15,3 +15,55 @@ html {
     font-size: calc(16px + 6 * ((100vw - 320px) / 680));
   }
 }
+
+body {
+  margin: 0;
+}
+
+.selected {
+  border-color: gold !important;
+  box-shadow: 0em 0em 3em 2em gold !important;
+  z-index: 10;
+}
+
+a.next,
+a.back {
+  width: 3em;
+  height: 4em;
+  font-size: 1em;
+  display: block;
+  border: 1px solid black;
+  border-radius: 0.5em;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+  text-decoration: none;
+  background-color: #ddd !important;
+  color: var(--text-color) !important;
+}
+
+a.next {
+  background: no-repeat center/contain
+    url(https://tarheelreader.org/themeV1/images/NextArrow.png);
+  right: 0;
+}
+
+a.back {
+  background: no-repeat center/contain
+    url(https://tarheelreader.org/themeV1/images/BackArrow.png);
+  left: 0;
+}
+
+body[data-buttonsize='large'] a.next,
+body[data-buttonsize='large'] a.back {
+  height: 80vh;
+}
+
+body[data-buttonsize='large'] {
+  margin: 0 4em;
+}
+
+body[data-buttonsize='none'] a.next,
+body[data-buttonsize='none'] a.back {
+  display: none;
+}

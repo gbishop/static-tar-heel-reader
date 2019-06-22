@@ -4,6 +4,8 @@ ul {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
 }
 
 li {
@@ -68,31 +70,6 @@ a.CR {
       url(https://tarheelreader.org/themeV1/images/caution_t.png);
 }
 
-a.next,
-a.back {
-  width: 6vw;
-  height: 3vw;
-  font-size: 1.5vw;
-  display: block;
-  border: 1px solid black;
-  border-radius: 0.5em;
-  text-align: center;
-  padding: 3em 0 1em;
-  text-decoration: none;
-}
-
-a.next {
-  background: no-repeat top/3em
-    url(https://tarheelreader.org/themeV1/images/NextArrow.png);
-  float: right;
-}
-
-a.back {
-  background: no-repeat top/3em
-    url(https://tarheelreader.org/themeV1/images/BackArrow.png);
-  float: left;
-}
-
 form {
   display: flex;
   flex-wrap: wrap;
@@ -100,7 +77,8 @@ form {
 }
 
 input,
-select {
+select,
+button {
   font-size: 1em;
   margin-top: 0.5em;
 }
@@ -109,13 +87,10 @@ a.hidden {
   display: none;
 }
 
-.selected {
-  border-color: red !important;
-  box-shadow: 0em 0em 3em;
-}
-
 details {
-  position: absolute;
+  position: fixed;
+  left: 0;
+  top: 0;
   background-color: white;
   color: black;
   z-index: 10;

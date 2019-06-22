@@ -1,5 +1,7 @@
 /* code used in each book */
 
+import state from './state';
+
 window.addEventListener('load', () => {
   /* fix the links back to point to the find page.
    * should this be conditional on coming from there?
@@ -12,6 +14,12 @@ window.addEventListener('load', () => {
   if (!location.hash) {
     location.hash = '#p1';
   }
+
+  /* restore page and text color */
+
+  document.documentElement.style.setProperty('--page-color', state.pageColor);
+  document.documentElement.style.setProperty('--text-color', state.textColor);
+  document.body.setAttribute('data-buttonsize', state.buttonSize);
 
   /* allow switch (keyboard) selection of links */
   function moveToNext() {

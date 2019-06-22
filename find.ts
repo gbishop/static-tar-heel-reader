@@ -22,6 +22,9 @@ interface Config {
 // load this down below in init
 let config: Config;
 
+// persistant state
+import state from './state';
+// porter2 stemmer
 import {stem} from 'stemr';
 
 import {
@@ -117,10 +120,10 @@ let ids: BookSet;
 
 async function find() {
   const terms = getQueryTerms();
-  if (searchState.category) {
-    terms.push(searchState.category);
+  if (state.category) {
+    terms.push(state.category);
   }
-  if (searchState.audience == 'C') {
+  if (state.audience == 'C') {
     terms.push('CAUTION');
   }
   if (terms.length) {
@@ -137,7 +140,7 @@ async function find() {
       // these numbers should come from a file
       ids = new RangeSet(config.first, config.last, config.digits, config.base);
     }
-    if (searchState.reviewed) {
+    if (state.reviewed) {
       // these numbers should come from a file
       ids = new Intersection(
         new RangeSet(
@@ -150,7 +153,7 @@ async function find() {
       );
     }
   } else {
-    if (searchState.reviewed) {
+    if (state.reviewed) {
       // these numbers should come from a file
       ids = new RangeSet(
         config.first,
@@ -163,11 +166,11 @@ async function find() {
       ids = new RangeSet(config.first, config.last, config.digits, config.base);
     }
   }
-  if (searchState.audience == 'E') {
+  if (state.audience == 'E') {
     const caution = await getIndexForTerm('CAUTION');
     ids = new Difference(ids, caution);
   }
-  const start = searchState.pages[searchState.pages.length - 1];
+  const start = state.pages[state.pages.length - 1];
   if (start) {
     ids.skipTo(start);
   }
@@ -179,89 +182,57 @@ function empty(node: HTMLElement) {
   while ((last = node.lastChild)) node.removeChild(last);
 }
 
-let BooksPerPage = 12;
-
 async function render() {
   // clear the old ones from the page
   empty(document.querySelector('ul'));
-  const SS = searchState;
+  const SS = state;
 
-  let offset = SS.page * BooksPerPage;
+  let offset = SS.page * state.booksPerPage;
   let bid;
   let i;
-  for (i = 0; i < BooksPerPage + 1; i++) {
+  for (i = 0; i < state.booksPerPage + 1; i++) {
     const o = i + offset;
     bid = SS.pages[o] || ids.next();
     if (!bid) {
       break;
     }
     SS.pages[o] = bid;
-    if (i >= BooksPerPage) {
+    if (i >= state.booksPerPage) {
       break;
     }
     const book = await getBookCover(bid);
     addBookToPage(book);
   }
-  persistState();
+  state.persist();
 
   // visibility of back and next buttons
+  pagingVisibility();
+}
+
+function pagingVisibility() {
+  // visibility of back and next buttons
+  const SS = state;
   document.querySelector('#back').classList.toggle('hidden', SS.page <= 0);
   document
     .querySelector('#next')
-    .classList.toggle('hidden', !SS.pages[(SS.page + 1) * BooksPerPage]);
+    .classList.toggle('hidden', !SS.pages[(SS.page + 1) * state.booksPerPage]);
 }
-
-interface SearchState {
-  search: string;
-  reviewed: boolean;
-  category: string;
-  audience: string;
-  page: number;
-  pages: string[];
-}
-
-const defaultSearchState: SearchState = {
-  search: '',
-  reviewed: true,
-  category: '',
-  audience: 'E',
-  page: 0,
-  pages: [],
-};
-
-let searchState = {...defaultSearchState};
 
 function updateState(): void {
   const form: HTMLFormElement = document.querySelector('form');
-  const s = searchState;
-  s.search = form.search.value;
-  s.reviewed = form.reviewed.value == 'R';
-  s.category = form.category.value;
-  s.audience = form.audience.value;
+  state.search = form.search.value;
+  state.reviewed = form.reviewed.value == 'R';
+  state.category = form.category.value;
+  state.audience = form.audience.value;
 }
 
-function updateControls(form: HTMLFormElement): void {
-  const s = searchState;
-  form.search.value = s.search;
-  form.reviewed.value = s.reviewed ? 'R' : '';
-  form.category.value = s.category;
-  form.audience.value = s.audience;
+function updateAndChange(selector: string, value: string, c = true) {
+  const e = document.querySelector(selector) as HTMLInputElement;
+  e.value = value;
+  if (c) e.dispatchEvent(new Event('change'));
 }
 
-function persistState(): void {
-  updateState();
-  const s = JSON.stringify(searchState);
-  localStorage.setItem('searchState', s);
-}
-
-function restoreState(): void {
-  const s = localStorage.getItem('searchState');
-  if (s) {
-    searchState = JSON.parse(s);
-  } else {
-    searchState = {...defaultSearchState};
-  }
-}
+function updateControls(form: HTMLFormElement): void {}
 
 /* allow switch (keyboard) selection of books */
 function moveToNext() {
@@ -298,34 +269,37 @@ function activateCurrent(e: KeyboardEvent) {
 }
 
 async function init() {
+  /* fetch configuration for the content */
   config = await (await fetch('content/config.json')).json();
 
   const form = document.querySelector('form');
   if (form) {
-    restoreState();
-    updateControls(form);
+    /* handle searches */
     form.addEventListener('submit', e => {
       e.preventDefault();
-      searchState.pages = [];
-      searchState.page = 0;
-      persistState();
+      updateState();
+      state.pages = [];
+      state.page = 0;
+      state.persist();
       find();
     });
-    form.addEventListener('change', () => {
-      // persistState();
-    });
+
+    /* enable stepping through pages of results */
     document.querySelector('#next').addEventListener('click', e => {
       e.preventDefault();
-      searchState.page += 1;
+      (e.target as HTMLElement).classList.remove('selected');
+      state.page += 1;
       render();
     });
     document.querySelector('#back').addEventListener('click', e => {
       e.preventDefault();
-      searchState.page -= 1;
+      (e.target as HTMLElement).classList.remove('selected');
+      state.page -= 1;
       render();
     });
+
+    /* switch control based on keys */
     window.addEventListener('keydown', e => {
-      console.log('kd', e);
       if (e.code == 'ArrowRight' || e.code == 'Space') {
         e.preventDefault();
         moveToNext();
@@ -333,32 +307,71 @@ async function init() {
         activateCurrent(e);
       }
     });
+
+    /* handle changes to page color */
     document
       .querySelector('select[name=page]')
       .addEventListener('change', e => {
-        console.log(e);
+        state.pageColor = (e.target as HTMLInputElement).value;
         document.documentElement.style.setProperty(
           '--page-color',
-          (e.target as HTMLInputElement).value,
+          state.pageColor,
         );
       });
+
+    /* handle changes to text color */
     document
       .querySelector('select[name=text]')
       .addEventListener('change', e => {
-        console.log(e);
+        state.textColor = (e.target as HTMLInputElement).value;
         document.documentElement.style.setProperty(
           '--text-color',
-          (e.target as HTMLInputElement).value,
+          state.textColor,
         );
       });
+
+    /* handle changes to the number of books per page */
     document.querySelector('input[name=bpp]').addEventListener('change', e => {
-      console.log(e);
       let newbpp = parseInt((e.target as HTMLInputElement).value);
-      searchState.page = Math.floor((searchState.page * BooksPerPage) / newbpp);
-      BooksPerPage = newbpp;
-      persistState();
+      state.page = Math.floor((state.page * state.booksPerPage) / newbpp);
+      state.booksPerPage = newbpp;
+      state.persist();
       render();
     });
+
+    /* update the dom from the button size control */
+    document
+      .querySelector('select[name=buttons]')
+      .addEventListener('change', e => {
+        state.buttonSize = (e.target as HTMLInputElement).value;
+        const bs = state.buttonSize == 'none' ? 'small' : state.buttonSize;
+        document.body.setAttribute('data-buttonSize', bs);
+      });
+
+    /* persist the state when the menu is closed */
+    const menu = document.querySelector('details');
+    menu.addEventListener('toggle', e => {
+      if (!menu.open) {
+        state.persist();
+      }
+    });
+
+    /* Add a close button because some might not realized how to dismiss it */
+    menu
+      .querySelector('#close')
+      .addEventListener('click', e => menu.removeAttribute('open'));
+
+    /* now that the handlers are registered update the controls to restore
+     * their saved values */
+    form.search.value = state.search;
+    form.reviewed.value = state.reviewed ? 'R' : '';
+    form.category.value = state.category;
+    form.audience.value = state.audience;
+    updateAndChange('input[name=bpp]', '' + state.booksPerPage, false);
+    updateAndChange('select[name=page]', state.pageColor);
+    updateAndChange('select[name=text]', state.textColor);
+    updateAndChange('select[name=buttons]', state.buttonSize);
+
     find();
   }
 }

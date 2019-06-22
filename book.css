@@ -22,34 +22,6 @@ img {
   min-height: 0;
 }
 
-a.next,
-a.back {
-  width: 8%;
-  font-size: 1.5vw;
-  display: block;
-  border: 1px solid black;
-  border-radius: 0.5em;
-  text-align: center;
-  padding: 3em 0 1em;
-  position: fixed;
-  bottom: 0;
-  text-decoration: none;
-  background-color: var(--page-color) !important;
-  color: var(--text-color) !important;
-}
-
-a.next {
-  background: no-repeat top/3em
-    url(https://tarheelreader.org/themeV1/images/NextArrow.png);
-  right: 0;
-}
-
-a.back {
-  background: no-repeat top/3em
-    url(https://tarheelreader.org/themeV1/images/BackArrow.png);
-  left: 0;
-}
-
 section#done {
   align-items: center;
   justify-content: center;
@@ -89,9 +61,4 @@ span {
   right: 0;
   font-size: 1em;
   padding: 1em;
-}
-
-.selected {
-  border-color: red !important;
-  box-shadow: 0em 0em 3em !important;
 }
