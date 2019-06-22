@@ -130,11 +130,9 @@ async function find() {
       return new Intersection(p, c);
     });
     if (!ids) {
-      // these numbers should come from a file
       ids = new RangeSet(config.first, config.last, config.digits, config.base);
     }
     if (state.reviewed) {
-      // these numbers should come from a file
       ids = new Intersection(
         new RangeSet(
           config.first,
@@ -147,7 +145,6 @@ async function find() {
     }
   } else {
     if (state.reviewed) {
-      // these numbers should come from a file
       ids = new RangeSet(
         config.first,
         config.lastReviewed,
@@ -155,7 +152,6 @@ async function find() {
         config.base,
       );
     } else {
-      // these numbers should come from a file
       ids = new RangeSet(config.first, config.last, config.digits, config.base);
     }
   }
