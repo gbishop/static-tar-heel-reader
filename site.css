@@ -43,14 +43,12 @@ a.back {
 }
 
 a.next {
-  background: no-repeat center/contain
-    url(https://tarheelreader.org/themeV1/images/NextArrow.png);
+  background: no-repeat center/contain url(images/NextArrow.png);
   right: 0;
 }
 
 a.back {
-  background: no-repeat center/contain
-    url(https://tarheelreader.org/themeV1/images/BackArrow.png);
+  background: no-repeat center/contain url(images/BackArrow.png);
   left: 0;
 }
 

@@ -55,19 +55,19 @@ img {
 
 a.R {
   background: no-repeat bottom 1em left 1em
-    url(https://tarheelreader.org/themeV1/images/reviewed_t.png);
+    url(images/reviewed_t.png);
 }
 
 a.C {
   background: no-repeat bottom 2em left 1em
-    url(https://tarheelreader.org/themeV1/images/caution_t.png);
+    url(images/caution_t.png);
 }
 
 a.CR {
   background: no-repeat bottom 1em left 1em
-      url(https://tarheelreader.org/themeV1/images/reviewed_t.png),
+      url(images/reviewed_t.png),
     no-repeat bottom 2em left 1em
-      url(https://tarheelreader.org/themeV1/images/caution_t.png);
+      url(images/caution_t.png);
 }
 
 form {

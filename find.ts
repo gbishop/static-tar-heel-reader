@@ -356,7 +356,7 @@ async function init() {
       }
     });
 
-    /* Add a close button because some might not realized how to dismiss it */
+    /* Add a close button to the menu */
     menu
       .querySelector('#close')
       .addEventListener('click', e => menu.removeAttribute('open'));
