@@ -109,13 +109,6 @@ async function getBookCover(bid: string): Promise<HTMLElement | null> {
   return item;
 }
 
-function addBookToPage(book: HTMLElement) {
-  const list = document.querySelector('ul');
-  if (list) {
-    list.appendChild(book);
-  }
-}
-
 let ids: BookSet;
 
 async function find() {
@@ -177,45 +170,37 @@ async function find() {
   return render();
 }
 
-function empty(node: HTMLElement) {
-  let last;
-  while ((last = node.lastChild)) node.removeChild(last);
-}
-
 async function render() {
   // clear the old ones from the page
-  empty(document.querySelector('ul'));
-  const SS = state;
+  const list = document.querySelector('ul');
+  let last;
+  while ((last = list.lastChild)) list.removeChild(last);
 
-  let offset = SS.page * state.booksPerPage;
-  let bid;
-  let i;
-  for (i = 0; i < state.booksPerPage + 1; i++) {
+  // determine where to start
+  let offset = state.page * state.booksPerPage;
+  for (let i = 0; i < state.booksPerPage + 1; i++) {
     const o = i + offset;
-    bid = SS.pages[o] || ids.next();
+    const bid = state.pages[o] || ids.next();
     if (!bid) {
       break;
     }
-    SS.pages[o] = bid;
+    state.pages[o] = bid;
     if (i >= state.booksPerPage) {
       break;
     }
     const book = await getBookCover(bid);
-    addBookToPage(book);
+    list.appendChild(book);
   }
   state.persist();
 
   // visibility of back and next buttons
-  pagingVisibility();
-}
-
-function pagingVisibility() {
-  // visibility of back and next buttons
-  const SS = state;
-  document.querySelector('#back').classList.toggle('hidden', SS.page <= 0);
+  document.querySelector('#back').classList.toggle('hidden', state.page <= 0);
   document
     .querySelector('#next')
-    .classList.toggle('hidden', !SS.pages[(SS.page + 1) * state.booksPerPage]);
+    .classList.toggle(
+      'hidden',
+      !state.pages[(state.page + 1) * state.booksPerPage],
+    );
 }
 
 function updateState(): void {
