@@ -54,20 +54,32 @@ img {
 }
 
 a.R {
-  background: no-repeat bottom 1em left 1em
-    url(images/reviewed_t.png);
+  background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png);
 }
 
 a.C {
-  background: no-repeat bottom 2em left 1em
-    url(images/caution_t.png);
+  background: no-repeat bottom 2em left 1em / 1em url(images/caution.png);
 }
 
 a.CR {
-  background: no-repeat bottom 1em left 1em
-      url(images/reviewed_t.png),
-    no-repeat bottom 2em left 1em
-      url(images/caution_t.png);
+  background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
+    no-repeat bottom 2em left 1em / 1em url(images/caution.png);
+}
+
+a.RF {
+  background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
+    no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
+}
+
+a.CF {
+  background: no-repeat bottom 2em left 1em / 1em url(images/caution.png),
+    no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
+}
+
+a.CRF {
+  background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
+    no-repeat bottom 2em left 1em / 1em url(images/caution.png),
+    no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
 }
 
 form {
