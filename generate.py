@@ -195,7 +195,7 @@ for progress, book in enumerate(books):
             author=book["author"],
             pages=len(book["pages"]),
             image=imgurl(book["pages"][0]["url"], bid, bpath),
-            icons="".join(icons),
+            icons=" ".join(icons),
             id=bid,
             link=bid[-1],
             path=ipath,

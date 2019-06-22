@@ -61,22 +61,22 @@ a.C {
   background: no-repeat bottom 2em left 1em / 1em url(images/caution.png);
 }
 
-a.CR {
+a.C.R {
   background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
     no-repeat bottom 2em left 1em / 1em url(images/caution.png);
 }
 
-a.RF {
+a.R.F {
   background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
     no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
 }
 
-a.CF {
+a.C.F {
   background: no-repeat bottom 2em left 1em / 1em url(images/caution.png),
     no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
 }
 
-a.CRF {
+a.C.R.F {
   background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
     no-repeat bottom 2em left 1em / 1em url(images/caution.png),
     no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
