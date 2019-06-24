@@ -8,12 +8,15 @@ body {
 section {
   display: none;
   text-align: center;
+  flex-direction: column;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  top: 0;
 }
 
 section:target {
   display: flex;
-  flex-direction: column;
-  height: 100vh;
 }
 
 img {
