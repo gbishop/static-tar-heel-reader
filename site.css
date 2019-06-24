@@ -58,7 +58,6 @@ body[data-buttonsize='large'] a.back {
 }
 
 body[data-buttonsize='large'] {
-  margin: 0 4em;
 }
 
 body[data-buttonsize='none'] a.next,
