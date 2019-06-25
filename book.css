@@ -81,3 +81,8 @@ span {
   font-size: 1em;
   padding: 1em;
 }
+
+a.next,
+a.back {
+  bottom: 0;
+}

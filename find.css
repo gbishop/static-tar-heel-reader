@@ -16,7 +16,6 @@ li {
   border-radius: 0.25em;
   text-align: center;
   position: relative;
-  margin: 0.1em;
   box-shadow: 0.1em 0.1em 0.1em #aaa;
 }
 
@@ -99,8 +98,12 @@ a.hidden {
   display: none;
 }
 
+body[data-buttonsize='none'] a.selected {
+  display: block;
+}
+
 details {
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   background-color: white;

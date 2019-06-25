@@ -343,7 +343,7 @@ async function init() {
       .addEventListener('change', e => {
         state.buttonSize = (e.target as HTMLInputElement).value;
         const bs = state.buttonSize == 'none' ? 'small' : state.buttonSize;
-        document.body.setAttribute('data-buttonSize', bs);
+        document.body.setAttribute('data-buttonSize', state.buttonSize);
       });
 
     /* persist the state when the menu is closed */
