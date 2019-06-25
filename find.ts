@@ -27,6 +27,8 @@ import state from './state';
 // porter2 stemmer
 import {stem} from 'stemr';
 
+import swipe from './swipe';
+
 import {
   BookSet,
   Intersection,
@@ -277,6 +279,21 @@ async function init() {
       (e.target as HTMLElement).classList.remove('selected');
       state.page -= 1;
       render();
+    });
+
+    /* enable swiping through results */
+    swipe(direction => {
+      if (direction == 'right') {
+        const back = document.querySelector('a.back:not(.hidden)');
+        if (back) {
+          (back as HTMLAnchorElement).click();
+        }
+      } else {
+        const next = document.querySelector('a.next:not(.hidden)');
+        if (next) {
+          (next as HTMLAnchorElement).click();
+        }
+      }
     });
 
     /* switch control based on keys */

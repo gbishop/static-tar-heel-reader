@@ -1,6 +1,7 @@
 /* code used in each book */
 
 import state from './state';
+import swipe from './swipe';
 
 window.addEventListener('load', () => {
   /* fix the links back to point to the find page.
@@ -65,6 +66,21 @@ window.addEventListener('load', () => {
         (back as HTMLAnchorElement).click();
       } else {
         activateCurrent();
+      }
+    }
+  });
+
+  /* allow paging through with swipes */
+  swipe(direction => {
+    if (direction == 'right') {
+      const back = document.querySelector('section:target a.back');
+      if (back) {
+        (back as HTMLAnchorElement).click();
+      }
+    } else {
+      const next = document.querySelector('section:target a.next');
+      if (next) {
+        (next as HTMLAnchorElement).click();
       }
     }
   });
