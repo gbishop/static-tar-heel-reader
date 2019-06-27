@@ -58,30 +58,6 @@ async function getIndexForTerm(term: string): Promise<BookSet | null> {
   return result;
 }
 
-function intersect(x: string[], y: string[]): string[] {
-  let i = 0,
-    j = 0,
-    r = [];
-  while (i < x.length && j < y.length) {
-    if (x[i] < y[j]) {
-      i++;
-    } else if (y[j] < x[i]) {
-      j++;
-    } else {
-      r.push(x[i]);
-      i++;
-      j++;
-    }
-  }
-  return r;
-}
-
-function intersectIndexes(indexes: string[][]) {
-  // get the shortest one first
-  indexes.sort((a, b) => a.length - b.length);
-  return indexes.reduce(intersect);
-}
-
 async function getBookCover(bid: string): Promise<HTMLElement | null> {
   // get the prefix of the path for this index
   const prefix =
