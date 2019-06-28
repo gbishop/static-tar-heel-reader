@@ -137,7 +137,7 @@ async function find() {
     const caution = await getIndexForTerm('CAUTION');
     ids = new Difference(ids, caution);
   }
-  const start = state.pages[state.pages.length - 1];
+  const start = state.displayedIds[state.displayedIds.length - 1];
   if (start) {
     ids.skipTo(start);
   }
@@ -154,11 +154,11 @@ async function render() {
   let offset = state.page * state.booksPerPage;
   for (let i = 0; i < state.booksPerPage + 1; i++) {
     const o = i + offset;
-    const bid = state.pages[o] || ids.next();
+    const bid = state.displayedIds[o] || ids.next();
     if (!bid) {
       break;
     }
-    state.pages[o] = bid;
+    state.displayedIds[o] = bid;
     if (i >= state.booksPerPage) {
       break;
     }
@@ -173,7 +173,7 @@ async function render() {
     .querySelector('#next')
     .classList.toggle(
       'hidden',
-      !state.pages[(state.page + 1) * state.booksPerPage],
+      !state.displayedIds[(state.page + 1) * state.booksPerPage],
     );
 }
 
@@ -220,10 +220,12 @@ function moveToNext() {
 
 /* click the currently selected link */
 function activateCurrent(e: KeyboardEvent) {
-  const selected = document.querySelector('.selected a, a.selected');
+  const selected: HTMLAnchorElement = document.querySelector(
+    '.selected a, a.selected',
+  );
   if (selected) {
     e.preventDefault();
-    (selected as HTMLAnchorElement).click();
+    selected.click();
   }
 }
 
@@ -237,7 +239,7 @@ async function init() {
     form.addEventListener('submit', e => {
       e.preventDefault();
       updateState();
-      state.pages = [];
+      state.displayedIds = [];
       state.page = 0;
       state.persist();
       find();
@@ -259,17 +261,10 @@ async function init() {
 
     /* enable swiping through results */
     swipe(direction => {
-      if (direction == 'right') {
-        const back = document.querySelector('a.back:not(.hidden)');
-        if (back) {
-          (back as HTMLAnchorElement).click();
-        }
-      } else {
-        const next = document.querySelector('a.next:not(.hidden)');
-        if (next) {
-          (next as HTMLAnchorElement).click();
-        }
-      }
+      const selector =
+        direction == 'right' ? 'a.back:not(.hidden)' : 'a.next:not(.hidden)';
+      const link: HTMLAnchorElement = document.querySelector(selector);
+      if (link) link.click();
     });
 
     /* switch control based on keys */

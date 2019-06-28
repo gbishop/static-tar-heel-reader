@@ -72,16 +72,10 @@ window.addEventListener('load', () => {
 
   /* allow paging through with swipes */
   swipe(direction => {
-    if (direction == 'right') {
-      const back = document.querySelector('section:target a.back');
-      if (back) {
-        (back as HTMLAnchorElement).click();
-      }
-    } else {
-      const next = document.querySelector('section:target a.next');
-      if (next) {
-        (next as HTMLAnchorElement).click();
-      }
-    }
+    const selector =
+      direction == 'right' ? 'section:target a.back' : 'section:target a.next';
+    const link: HTMLAnchorElement = document.querySelector(selector);
+    if (link)
+      link.click();
   });
 });

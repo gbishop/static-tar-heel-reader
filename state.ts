@@ -5,8 +5,13 @@ class State {
   public reviewed = true;
   public category = '';
   public audience = 'E';
+  /* the page of results we are currently displaying */
   public page = 0;
-  public pages: string[] = [];
+  /* displayedIds is a list of the ids we have shown to the user. We
+   * can't backup in the BookSets so we remember all the ones we have
+   * seen for this query so that we can allow paging backward in results.
+   */
+  public displayedIds: string[] = [];
   public booksPerPage = 9;
   public pageColor = '#fff';
   public textColor = '#000';
@@ -31,8 +36,8 @@ class State {
     if ('page' in o && typeof o.page === 'number') {
       this.page = o.page;
     }
-    if ('pages' in o && typeof o.pages === 'object') {
-      this.pages = o.pages;
+    if ('displayedIds' in o && typeof o.pages === 'object') {
+      this.displayedIds = o.pages;
     }
     if ('booksPerPage' in o && typeof o.page === 'number') {
       this.booksPerPage = o.booksPerPage;
