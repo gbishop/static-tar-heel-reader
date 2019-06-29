@@ -8,6 +8,8 @@ module.exports = {
   entry: {
     find: './find.ts',
     book: './book.ts',
+	index: './index.ts',
+	worker: './service-worker.ts',
   },
   output: {
     filename: '[name].js',
@@ -25,13 +27,18 @@ module.exports = {
       errorDetails: true,
     },
     overlay: true,
-    proxy: [
-      {
-        context: ['/content', 'config.json'],
-        target: 'https://gb.cs.unc.edu/static/tiny',
-        secure: false,
-        changeOrigin: true,
+    proxy: {
+      '/xyz': {
+        target: 'https://gb.cs.unc.edu/static/tiny/content',
+		  secure: false,
+		  changeOrigin: true,
       },
-    ],
+	  'config.json': {
+        target: 'https://gb.cs.unc.edu/static/tiny',
+		  secure: false,
+		  changeOrigin: true,
+      }
+    },
   },
+  devtool: 'eval-source-map',
 };
