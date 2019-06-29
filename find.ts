@@ -22,7 +22,12 @@ interface Config {
 // load this down below in init
 let config: Config;
 
+// persistant state
+import state from './state';
+// porter2 stemmer
 import {stem} from 'stemr';
+
+import swipe from './swipe';
 
 import {
   BookSet,
@@ -106,21 +111,14 @@ async function getBookCover(bid: string): Promise<HTMLElement | null> {
   return item;
 }
 
-function addBookToPage(book: HTMLElement) {
-  const list = document.querySelector('ul');
-  if (list) {
-    list.appendChild(book);
-  }
-}
-
 let ids: BookSet;
 
 async function find() {
   const terms = getQueryTerms();
-  if (searchState.category) {
-    terms.push(searchState.category);
+  if (state.category) {
+    terms.push(state.category);
   }
-  if (searchState.audience == 'C') {
+  if (state.audience == 'C') {
     terms.push('CAUTION');
   }
   if (terms.length) {
@@ -134,11 +132,9 @@ async function find() {
       return new Intersection(p, c);
     });
     if (!ids) {
-      // these numbers should come from a file
       ids = new RangeSet(config.first, config.last, config.digits, config.base);
     }
-    if (searchState.reviewed) {
-      // these numbers should come from a file
+    if (state.reviewed) {
       ids = new Intersection(
         new RangeSet(
           config.first,
@@ -150,8 +146,7 @@ async function find() {
       );
     }
   } else {
-    if (searchState.reviewed) {
-      // these numbers should come from a file
+    if (state.reviewed) {
       ids = new RangeSet(
         config.first,
         config.lastReviewed,
@@ -159,109 +154,68 @@ async function find() {
         config.base,
       );
     } else {
-      // these numbers should come from a file
       ids = new RangeSet(config.first, config.last, config.digits, config.base);
     }
   }
-  if (searchState.audience == 'E') {
+  if (state.audience == 'E') {
     const caution = await getIndexForTerm('CAUTION');
     ids = new Difference(ids, caution);
   }
-  const start = searchState.pages[searchState.pages.length - 1];
+  const start = state.pages[state.pages.length - 1];
   if (start) {
     ids.skipTo(start);
   }
   return render();
 }
 
-function empty(node: HTMLElement) {
-  let last;
-  while ((last = node.lastChild)) node.removeChild(last);
-}
-
-const BooksPerPage = 12;
-
 async function render() {
   // clear the old ones from the page
-  empty(document.querySelector('ul'));
-  const SS = searchState;
+  const list = document.querySelector('ul');
+  let last;
+  while ((last = list.lastChild)) list.removeChild(last);
 
-  let offset = SS.page * BooksPerPage;
-  let bid;
-  let i;
-  for (i = 0; i < BooksPerPage + 1; i++) {
+  // determine where to start
+  let offset = state.page * state.booksPerPage;
+  for (let i = 0; i < state.booksPerPage + 1; i++) {
     const o = i + offset;
-    bid = SS.pages[o] || ids.next();
+    const bid = state.pages[o] || ids.next();
     if (!bid) {
       break;
     }
-    SS.pages[o] = bid;
-    if (i >= BooksPerPage) {
+    state.pages[o] = bid;
+    if (i >= state.booksPerPage) {
       break;
     }
     const book = await getBookCover(bid);
-    addBookToPage(book);
+    list.appendChild(book);
   }
-  persistState();
+  state.persist();
 
   // visibility of back and next buttons
-  document.querySelector('#back').classList.toggle('hidden', SS.page <= 0);
+  document.querySelector('#back').classList.toggle('hidden', state.page <= 0);
   document
     .querySelector('#next')
-    .classList.toggle('hidden', !SS.pages[(SS.page + 1) * BooksPerPage]);
+    .classList.toggle(
+      'hidden',
+      !state.pages[(state.page + 1) * state.booksPerPage],
+    );
 }
-
-interface SearchState {
-  search: string;
-  reviewed: boolean;
-  category: string;
-  audience: string;
-  page: number;
-  pages: string[];
-}
-
-const defaultSearchState: SearchState = {
-  search: '',
-  reviewed: true,
-  category: '',
-  audience: 'E',
-  page: 0,
-  pages: [],
-};
-
-let searchState = {...defaultSearchState};
 
 function updateState(): void {
   const form: HTMLFormElement = document.querySelector('form');
-  const s = searchState;
-  s.search = form.search.value;
-  s.reviewed = form.reviewed.value == 'R';
-  s.category = form.category.value;
-  s.audience = form.audience.value;
+  state.search = form.search.value;
+  state.reviewed = form.reviewed.value == 'R';
+  state.category = form.category.value;
+  state.audience = form.audience.value;
 }
 
-function updateControls(form: HTMLFormElement): void {
-  const s = searchState;
-  form.search.value = s.search;
-  form.reviewed.value = s.reviewed ? 'R' : '';
-  form.category.value = s.category;
-  form.audience.value = s.audience;
+function updateAndChange(selector: string, value: string, c = true) {
+  const e = document.querySelector(selector) as HTMLInputElement;
+  e.value = value;
+  if (c) e.dispatchEvent(new Event('change'));
 }
 
-function persistState(): void {
-  updateState();
-  const s = JSON.stringify(searchState);
-  localStorage.setItem('searchState', s);
-}
-
-function restoreState(): void {
-  const s = localStorage.getItem('searchState');
-  if (s) {
-    searchState = JSON.parse(s);
-  } else {
-    searchState = {...defaultSearchState};
-  }
-}
+function updateControls(form: HTMLFormElement): void {}
 
 /* allow switch (keyboard) selection of books */
 function moveToNext() {
@@ -289,53 +243,133 @@ function moveToNext() {
 }
 
 /* click the currently selected link */
-function activateCurrent() {
+function activateCurrent(e: KeyboardEvent) {
   const selected = document.querySelector('.selected a, a.selected');
   if (selected) {
+    e.preventDefault();
     (selected as HTMLAnchorElement).click();
   }
 }
 
 async function init() {
+  /* fetch configuration for the content */
   config = await (await fetch('content/config.json')).json();
 
   const form = document.querySelector('form');
   if (form) {
-    restoreState();
-    updateControls(form);
+    /* handle searches */
     form.addEventListener('submit', e => {
       e.preventDefault();
-      searchState.pages = [];
-      searchState.page = 0;
-      persistState();
+      updateState();
+      state.pages = [];
+      state.page = 0;
+      state.persist();
       find();
     });
-    form.addEventListener('change', () => {
-      // persistState();
+
+    /* enable stepping through pages of results */
+    document.querySelector('#next').addEventListener('click', e => {
+      e.preventDefault();
+      (e.target as HTMLElement).classList.remove('selected');
+      state.page += 1;
+      render();
     });
-    document
-      .querySelector('#next')
-      .addEventListener('click', (e: MouseEvent) => {
-        e.preventDefault();
-        searchState.page += 1;
-        render();
-      });
-    document
-      .querySelector('#back')
-      .addEventListener('click', (e: MouseEvent) => {
-        e.preventDefault();
-        searchState.page -= 1;
-        render();
-      });
+    document.querySelector('#back').addEventListener('click', e => {
+      e.preventDefault();
+      (e.target as HTMLElement).classList.remove('selected');
+      state.page -= 1;
+      render();
+    });
+
+    /* enable swiping through results */
+    swipe(direction => {
+      if (direction == 'right') {
+        const back = document.querySelector('a.back:not(.hidden)');
+        if (back) {
+          (back as HTMLAnchorElement).click();
+        }
+      } else {
+        const next = document.querySelector('a.next:not(.hidden)');
+        if (next) {
+          (next as HTMLAnchorElement).click();
+        }
+      }
+    });
+
+    /* switch control based on keys */
     window.addEventListener('keydown', e => {
       if (e.code == 'ArrowRight' || e.code == 'Space') {
         e.preventDefault();
         moveToNext();
       } else if (e.code == 'ArrowLeft' || e.code == 'Enter') {
-        e.preventDefault();
-        activateCurrent();
+        activateCurrent(e);
       }
     });
+
+    /* handle changes to page color */
+    document
+      .querySelector('select[name=page]')
+      .addEventListener('change', e => {
+        state.pageColor = (e.target as HTMLInputElement).value;
+        document.documentElement.style.setProperty(
+          '--page-color',
+          state.pageColor,
+        );
+      });
+
+    /* handle changes to text color */
+    document
+      .querySelector('select[name=text]')
+      .addEventListener('change', e => {
+        state.textColor = (e.target as HTMLInputElement).value;
+        document.documentElement.style.setProperty(
+          '--text-color',
+          state.textColor,
+        );
+      });
+
+    /* handle changes to the number of books per page */
+    document.querySelector('input[name=bpp]').addEventListener('change', e => {
+      let newbpp = parseInt((e.target as HTMLInputElement).value);
+      state.page = Math.floor((state.page * state.booksPerPage) / newbpp);
+      state.booksPerPage = newbpp;
+      state.persist();
+      render();
+    });
+
+    /* update the dom from the button size control */
+    document
+      .querySelector('select[name=buttons]')
+      .addEventListener('change', e => {
+        state.buttonSize = (e.target as HTMLInputElement).value;
+        const bs = state.buttonSize == 'none' ? 'small' : state.buttonSize;
+        document.body.setAttribute('data-buttonSize', state.buttonSize);
+      });
+
+    /* persist the state when the menu is closed */
+    const menu = document.querySelector('details');
+    menu.addEventListener('toggle', e => {
+      if (!menu.open) {
+        state.persist();
+      }
+    });
+
+    /* Add a close button to the menu */
+    menu
+      .querySelector('#close')
+      .addEventListener('click', e => menu.removeAttribute('open'));
+
+    /* now that the handlers are registered update the controls to restore
+     * their saved values */
+    form.search.value = state.search;
+    form.reviewed.value = state.reviewed ? 'R' : '';
+    form.category.value = state.category;
+    form.audience.value = state.audience;
+    updateAndChange('input[name=bpp]', '' + state.booksPerPage, false);
+    updateAndChange('select[name=page]', state.pageColor);
+    updateAndChange('select[name=text]', state.textColor);
+    updateAndChange('select[name=buttons]', state.buttonSize);
+
     find();
   }
 }

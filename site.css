@@ -1,11 +1,70 @@
+:root {
+  --page-color: white;
+  --text-color: black;
+}
+
 html {
   font-size: 16px;
   font-family: Helmet, Freesans, Arial, Helvetica;
+  background-color: var(--page-color);
+  color: var(--text-color);
 }
 
-@media screen and (min-width: 320px) {
+/* font-size: calc([minimum size] + ([maximum size] - [minimum size]) * ((100vw - [minimum viewport width]) / ([maximum viewport width] - [minimum viewport width]))); */
+
+@media screen and (min-width: 360px) {
   html {
-    font-size: calc(16px + 6 * ((100vw - 320px) / 680));
+    font-size: calc(16px + (30 - 16) * ((100vw - 360px) / (1280 - 360)));
   }
 }
 
+body {
+  margin: 0;
+}
+
+.selected {
+  border-color: gold !important;
+  box-shadow: 0em 0em 3em 2em gold !important;
+  z-index: 10;
+}
+
+a.next,
+a.back {
+  width: 3em;
+  height: 4em;
+  font-size: 1em;
+  display: block;
+  border: 1px solid black;
+  border-radius: 0.5em;
+  text-align: center;
+  position: absolute;
+  text-decoration: none;
+  background-color: #ddd !important;
+  color: var(--text-color) !important;
+}
+
+a.next {
+  background: no-repeat center/contain url(images/NextArrow.png);
+  right: 0;
+}
+
+a.back {
+  background: no-repeat center/contain url(images/BackArrow.png);
+  left: 0;
+}
+
+body[data-buttonsize='large'] a.next,
+body[data-buttonsize='large'] a.back {
+  height: 80vh;
+  position: fixed;
+  bottom: 0;
+}
+
+body[data-buttonsize='large'] ul {
+  margin: 0 3rem;
+}
+
+body[data-buttonsize='none'] a.next,
+body[data-buttonsize='none'] a.back {
+  display: none;
+}

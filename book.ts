@@ -1,5 +1,8 @@
 /* code used in each book */
 
+import state from './state';
+import swipe from './swipe';
+
 window.addEventListener('load', () => {
   /* fix the links back to point to the find page.
    * should this be conditional on coming from there?
@@ -12,6 +15,12 @@ window.addEventListener('load', () => {
   if (!location.hash) {
     location.hash = '#p1';
   }
+
+  /* restore page and text color */
+
+  document.documentElement.style.setProperty('--page-color', state.pageColor);
+  document.documentElement.style.setProperty('--text-color', state.textColor);
+  document.body.setAttribute('data-buttonsize', state.buttonSize);
 
   /* allow switch (keyboard) selection of links */
   function moveToNext() {
@@ -57,6 +66,21 @@ window.addEventListener('load', () => {
         (back as HTMLAnchorElement).click();
       } else {
         activateCurrent();
+      }
+    }
+  });
+
+  /* allow paging through with swipes */
+  swipe(direction => {
+    if (direction == 'right') {
+      const back = document.querySelector('section:target a.back');
+      if (back) {
+        (back as HTMLAnchorElement).click();
+      }
+    } else {
+      const next = document.querySelector('section:target a.next');
+      if (next) {
+        (next as HTMLAnchorElement).click();
       }
     }
   });

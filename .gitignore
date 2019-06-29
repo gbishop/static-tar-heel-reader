@@ -2,5 +2,6 @@
 *.gz
 *.swp
 node_modules
-*.js
+find.js
+book.js
 *.js.map

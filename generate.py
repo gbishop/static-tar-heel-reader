@@ -16,11 +16,11 @@ import aspell
 from spellchecker import SpellChecker
 import contractions
 import pandas as pd
-import Args
+import myArgs
 import math
 from sqlitedict import SqliteDict
 
-args = Args.Parse(base=16, Nselect=100, minPages=6, maxPages=20, out=str)
+args = myArgs.Parse(base=16, Nselect=100, minPages=6, maxPages=20, out=str)
 
 # get all the books
 books = json.load(gzip.open("data/books.json.gz", "rt", encoding="utf-8"))
@@ -195,7 +195,7 @@ for progress, book in enumerate(books):
             author=book["author"],
             pages=len(book["pages"]),
             image=imgurl(book["pages"][0]["url"], bid, bpath),
-            icons="".join(icons),
+            icons=" ".join(icons),
             id=bid,
             link=bid[-1],
             path=ipath,
@@ -265,7 +265,7 @@ os.makedirs(WOUT, exist_ok=True)
 for word in wordToSlugs.keys():
     if len(word) < 3:
         continue
-    ids = [bookmap[slug][0] for slug in wordToSlugs[word]]
+    ids = sorted([bookmap[slug][0] for slug in wordToSlugs[word]])
     with open(osp.join(WOUT, word), "wt", encoding="utf-8") as fp:
         fp.write("".join(ids))
 
@@ -282,15 +282,23 @@ with open(osp.join(CONTENT, "config.json"), "wt") as fp:
 
 # copy the extras
 for fname in [
-    "site.css",
-    "index.css",
-    "book.css",
-    "book.js",
-    "find.html",
-    "find.js",
-    "find.css",
+        "site.css",
+        "index.css",
+        "book.css",
+        "book.js",
+        "find.html",
+        "find.js",
+        "find.css",
+        "images/BackArrow.png",
+        "images/NextArrow.png",
+        "images/favorite.png",
+        "images/caution.png",
+        "images/reviewed.png",
+        "images/settings.png",
 ]:
     if osp.exists(fname):
-        shutil.copyfile(fname, osp.join(OUT, fname))
+        opath = osp.join(OUT, fname)
+        os.makedirs(osp.dirname(opath), exist_ok=True)
+        shutil.copyfile(fname, opath)
 
 

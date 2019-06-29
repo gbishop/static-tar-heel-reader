@@ -4,6 +4,8 @@ ul {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
 }
 
 li {
@@ -14,7 +16,6 @@ li {
   border-radius: 0.25em;
   text-align: center;
   position: relative;
-  margin: 0.1em;
   box-shadow: 0.1em 0.1em 0.1em #aaa;
 }
 
@@ -33,6 +34,7 @@ p {
 h1 {
   font-size: 1em;
   margin-top: 0;
+  text-align: center;
 }
 
 a {
@@ -51,45 +53,32 @@ img {
 }
 
 a.R {
-  background: no-repeat bottom 1em left 1em
-    url(https://tarheelreader.org/themeV1/images/reviewed_t.png);
+  background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png);
 }
 
 a.C {
-  background: no-repeat bottom 2em left 1em
-    url(https://tarheelreader.org/themeV1/images/caution_t.png);
+  background: no-repeat bottom 2em left 1em / 1em url(images/caution.png);
 }
 
-a.CR {
-  background: no-repeat bottom 1em left 1em
-      url(https://tarheelreader.org/themeV1/images/reviewed_t.png),
-    no-repeat bottom 2em left 1em
-      url(https://tarheelreader.org/themeV1/images/caution_t.png);
+a.C.R {
+  background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
+    no-repeat bottom 2em left 1em / 1em url(images/caution.png);
 }
 
-a.next,
-a.back {
-  width: 6vw;
-  height: 3vw;
-  font-size: 1.5vw;
-  display: block;
-  border: 1px solid black;
-  border-radius: 0.5em;
-  text-align: center;
-  padding: 3em 0 1em;
-  text-decoration: none;
+a.R.F {
+  background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
+    no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
 }
 
-a.next {
-  background: no-repeat top/3em
-    url(https://tarheelreader.org/themeV1/images/NextArrow.png);
-  float: right;
+a.C.F {
+  background: no-repeat bottom 2em left 1em / 1em url(images/caution.png),
+    no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
 }
 
-a.back {
-  background: no-repeat top/3em
-    url(https://tarheelreader.org/themeV1/images/BackArrow.png);
-  float: left;
+a.C.R.F {
+  background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
+    no-repeat bottom 2em left 1em / 1em url(images/caution.png),
+    no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
 }
 
 form {
@@ -99,7 +88,8 @@ form {
 }
 
 input,
-select {
+select,
+button {
   font-size: 1em;
   margin-top: 0.5em;
 }
@@ -108,7 +98,35 @@ a.hidden {
   display: none;
 }
 
-.selected {
-  border-color: red !important;
-  box-shadow: 0em 0em 3em;
+body[data-buttonsize='none'] a.selected {
+  display: block;
+}
+
+details {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: white;
+  color: black;
+  z-index: 10;
+}
+
+details div {
+  border: 1px solid black;
+  padding: 1em;
+  box-shadow: 0.2em 0.2em 0.2em black;
+}
+
+details label {
+  display: block;
+}
+
+details input {
+  width: 2em;
+}
+
+summary img {
+  width: 1.5em;
+  height: 1.5em;
+  margin-left: -0.5em;
 }

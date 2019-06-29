@@ -5,47 +5,33 @@ body {
   margin: 0;
 }
 
+body[data-buttonsize='small'] section {
+  width: 100%;
+}
+
+body[data-buttonsize='large'] section {
+  width: calc(100% - 6rem);
+  margin-left: 3rem;
+}
+
 section {
   display: none;
   text-align: center;
+  flex-direction: column;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  top: 0;
 }
 
 section:target {
   display: flex;
-  flex-direction: column;
-  height: 100vh;
 }
 
 img {
   flex: 1;
   object-fit: contain;
   min-height: 0;
-}
-
-a.next,
-a.back {
-  width: 8%;
-  font-size: 1.5vw;
-  display: block;
-  border: 1px solid black;
-  border-radius: 0.5em;
-  text-align: center;
-  padding: 3em 0 1em;
-  position: fixed;
-  bottom: 0;
-  text-decoration: none;
-}
-
-a.next {
-  background: no-repeat top/3em
-    url(https://tarheelreader.org/themeV1/images/NextArrow.png);
-  right: 0;
-}
-
-a.back {
-  background: no-repeat top/3em
-    url(https://tarheelreader.org/themeV1/images/BackArrow.png);
-  left: 0;
 }
 
 section#done {
@@ -61,19 +47,26 @@ section#done {
   width: 18em;
   border: 1px solid black;
   box-shadow: 0.1em 0.1em 0.1em rgba(0, 0, 0, 0.4);
-  color: black;
-  background-color: white;
+  color: var(--text-color);
+  background-color: var(--page-color);
 }
 
 #done a:hover {
   filter: invert(100);
 }
 
+h1 {
+  font-size: 2em;
+}
+
+body[data-buttonsize='small'] p {
+  width: calc(100% - 6rem);
+}
+
 p {
-  font-size: 3em;
-  min-height: 3.6em;
+  font-size: 2em;
+  min-height: 2.4em;
   margin: auto;
-  width: 84%;
 }
 
 p#author {
@@ -89,7 +82,7 @@ span {
   padding: 1em;
 }
 
-.selected {
-  border-color: red !important;
-  box-shadow: 0em 0em 3em !important;
+a.next,
+a.back {
+  bottom: 0;
 }
