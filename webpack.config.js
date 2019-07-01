@@ -8,6 +8,7 @@ module.exports = {
   entry: {
     find: './find.ts',
     book: './book.ts',
+    settings: './settings.ts',
   },
   output: {
     filename: '[name].js',
