@@ -10,6 +10,7 @@ module.exports = {
     book: './book.ts',
 	index: './index.ts',
 	worker: './service-worker.ts',
+    settings: './settings.ts',
   },
   output: {
     filename: '[name].js',

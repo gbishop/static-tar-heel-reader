@@ -1,67 +1,68 @@
 /* code used in each book */
 
-import state from './state';
-import swipe from './swipe';
+import state from "./state";
+import swipe from "./swipe";
 
-window.addEventListener('load', () => {
+window.addEventListener("load", () => {
   /* fix the links back to point to the find page.
    * should this be conditional on coming from there?
    */
+  const backTo = state.mode == "find" ? "../../find.html" : "../../choose.html";
   document
     .querySelectorAll("a[href^='./']")
-    .forEach((link: HTMLAnchorElement) => (link.href = '../../find.html'));
+    .forEach((link: HTMLAnchorElement) => (link.href = backTo));
 
   /* make sure we have a page number so it isn't just blank */
   if (!location.hash) {
-    location.hash = '#p1';
+    location.hash = "#p1";
   }
 
   /* restore page and text color */
 
-  document.documentElement.style.setProperty('--page-color', state.pageColor);
-  document.documentElement.style.setProperty('--text-color', state.textColor);
-  document.body.setAttribute('data-buttonsize', state.buttonSize);
+  document.documentElement.style.setProperty("--page-color", state.pageColor);
+  document.documentElement.style.setProperty("--text-color", state.textColor);
+  document.body.setAttribute("data-buttonsize", state.buttonSize);
 
   /* allow switch (keyboard) selection of links */
   function moveToNext() {
     // get the currently selected if any
-    const selected = document.querySelector('.selected');
+    const selected = document.querySelector(".selected");
     // get all the items we can select
-    const selectable = document.querySelectorAll('section:target a');
+    const selectable = document.querySelectorAll("section:target a");
     // assume the first
     let next = 0;
     // if was selected, unselect it and compute the index of the next one
     if (selected) {
-      selected.classList.remove('selected');
+      selected.classList.remove("selected");
       next = ([].indexOf.call(selectable, selected) + 1) % selectable.length;
     }
     // mark the new one selected
-    selectable[next].classList.add('selected');
+    selectable[next].classList.add("selected");
   }
 
   /* click the currently selected link */
   function activateCurrent() {
-    const selected = document.querySelector('a.selected');
+    const selected = document.querySelector("a.selected");
     if (selected) {
       (selected as HTMLAnchorElement).click();
     }
   }
 
   /* Allow reading the book with switches */
-  window.addEventListener('keydown', e => {
-    if (e.code == 'ArrowRight' || e.code == 'Space') {
+  window.addEventListener("keydown", e => {
+    if (e.code == "ArrowRight" || e.code == "Space") {
       // next page or next menu item
       e.preventDefault();
-      const next = document.querySelector('section:target a.next');
+      const next = document.querySelector("section:target a.next");
       if (next) {
         (next as HTMLAnchorElement).click();
       } else {
         moveToNext();
       }
-    } else if (e.code == 'ArrowLeft' || e.code == 'Enter') {
+    } else if (e.code == "ArrowLeft" || e.code == "Enter") {
       // back one page or activate menu
       e.preventDefault();
-      const back = document.querySelector('section:target a.back');
+      const back = document.querySelector("section:target a.back");
       if (back) {
         (back as HTMLAnchorElement).click();
       } else {
@@ -72,16 +73,9 @@ window.addEventListener('load', () => {
 
   /* allow paging through with swipes */
   swipe(direction => {
-    if (direction == 'right') {
-      const back = document.querySelector('section:target a.back');
-      if (back) {
-        (back as HTMLAnchorElement).click();
-      }
-    } else {
-      const next = document.querySelector('section:target a.next');
-      if (next) {
-        (next as HTMLAnchorElement).click();
-      }
-    }
+    const selector =
+      direction == "right" ? "section:target a.back" : "section:target a.next";
+    const link: HTMLAnchorElement = document.querySelector(selector);
+    if (link) link.click();
   });
 });

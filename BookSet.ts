@@ -132,4 +132,25 @@ export class StringSet implements BookSet {
   }
 }
 
+export class ArraySet implements BookSet {
+  public index: number;
+  constructor(public values: string[]) {
+    this.index = -1;
+  }
+  public next(): string {
+    this.index += 1;
+    return this.values[this.index];
+  }
+  public skipTo(t: string) {
+    let c,
+      i = Math.max(0, this.index),
+      v = this.values;
+    while ((c = v[i]) && c < t) {
+      i += 1;
+    }
+    this.index = i;
+    return c;
+  }
+}
+
 export default BookSet;

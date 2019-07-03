@@ -269,6 +269,10 @@ for word in wordToSlugs.keys():
     with open(osp.join(WOUT, word), "wt", encoding="utf-8") as fp:
         fp.write("".join(ids))
 
+# write the AllAvailable file
+with open(osp.join(WOUT, 'AllAvailable'), "wt", encoding='utf-8') as fp:
+    fp.write('%s-%s' % ("0" * Dbooks, last))
+
 # record parameters needed by the js
 config = {
     "base": args.base,

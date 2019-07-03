@@ -53,18 +53,52 @@ a.back {
   left: 0;
 }
 
-body[data-buttonsize='large'] a.next,
-body[data-buttonsize='large'] a.back {
+body[data-buttonsize="large"] a.next,
+body[data-buttonsize="large"] a.back {
   height: 80vh;
   position: fixed;
   bottom: 0;
 }
 
-body[data-buttonsize='large'] ul {
+body[data-buttonsize="large"] ul {
   margin: 0 3rem;
 }
 
-body[data-buttonsize='none'] a.next,
-body[data-buttonsize='none'] a.back {
+body[data-buttonsize="none"] a.next,
+body[data-buttonsize="none"] a.back {
   display: none;
+}
+
+details {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: white;
+  color: black;
+  z-index: 10;
+  font-size: 4px;
+}
+
+details nav {
+  font-size: 1rem;
+  border: 1px solid black;
+  padding: 1em;
+  box-shadow: 0.2em 0.2em 0.2em black;
+}
+
+nav a {
+  display: block;
+  text-decoration: none;
+  background-color: #eeeeee;
+  color: #333333;
+  padding: 0.2rem;
+  margin-bottom: 0.5rem;
+  border: 2px outset buttonface;
+}
+
+h1:first-of-type {
+  text-align: center;
+  height: 48px;
+  margin-top: 0;
+  margin-bottom: 10px;
 }

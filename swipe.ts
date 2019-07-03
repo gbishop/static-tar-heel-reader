@@ -1,6 +1,6 @@
 /* Implement simple swipe capability for turning pages */
 
-function swipe(callback: (direction: string) => void): void {
+function swipe(callback: (direction: 'left' | 'right') => void): void {
   let start = [0, 0];
   let end = [0, 0];
   document.addEventListener('touchstart', e => {
