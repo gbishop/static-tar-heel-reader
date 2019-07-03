@@ -28,18 +28,14 @@ module.exports = {
       errorDetails: true,
     },
     overlay: true,
-    proxy: {
-      '/xyz': {
-        target: 'https://gb.cs.unc.edu/static/tiny/content',
-		  secure: false,
-		  changeOrigin: true,
-      },
-	  'config.json': {
+    proxy: [
+      {
+        context: ['/content', 'config.json'],
         target: 'https://gb.cs.unc.edu/static/tiny',
-		  secure: false,
-		  changeOrigin: true,
-      }
-    },
+        secure: false,
+        changeOrigin: true,
+      },
+    ],
   },
   devtool: 'eval-source-map',
 };
