@@ -1,0 +1,49 @@
+@import url("site.css");
+
+#list {
+  list-style: none;
+}
+
+#list li {
+  margin-top: 0.5em;
+}
+
+#list li.selected {
+  border: 1px solid black;
+}
+
+#tools {
+  margin-left: 2em;
+}
+
+input[name="active"]:checked + label {
+  background-color: #99badd;
+  color: white;
+}
+
+label {
+  padding: 0.2em;
+  display: inline-block;
+}
+
+input,
+select,
+button {
+  font-size: 1em;
+}
+
+li input[name="name"] {
+  display: none;
+}
+
+li.renaming input[name="name"] {
+  display: inline;
+}
+
+li.renaming label {
+  display: none;
+}
+
+#new {
+  margin-top: 1em;
+}

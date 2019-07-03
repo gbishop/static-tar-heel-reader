@@ -28,6 +28,7 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
+    "idb": "^4.0.3",
     "stemr": "^1.0.0"
   },
   "description": ""

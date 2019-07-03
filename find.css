@@ -4,7 +4,7 @@ ul {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-evenly;
   padding: 0;
 }
 
@@ -17,6 +17,7 @@ li {
   text-align: center;
   position: relative;
   box-shadow: 0.1em 0.1em 0.1em #aaa;
+  margin-bottom: 0.5em;
 }
 
 li span {

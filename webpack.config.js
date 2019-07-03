@@ -9,6 +9,7 @@ module.exports = {
     find: './find.ts',
     book: './book.ts',
     settings: './settings.ts',
+    favorites: './favorites.ts',
   },
   output: {
     filename: '[name].js',

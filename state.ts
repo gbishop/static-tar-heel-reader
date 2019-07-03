@@ -1,9 +1,9 @@
 /* Collect state together and allow it to persist */
 
-const version = 1; /* version of the persistent data */
+const version = 3; /* version of the persistent data */
 
 class State {
-  public mode: "find" | "choose";
+  public mode: "find" | "choose" | "edit";
   public search = "";
   public reviewed = true;
   public category = "";
@@ -20,8 +20,11 @@ class State {
   public textColor = "#000";
   public buttonSize = "small";
   /* favorites related values */
-  public favName = "";
-  public favIds: string[] = [];
+  public fav = {
+    id: 1,
+    name: "Favorites",
+    bookIds: <string[]>[],
+  };
 
   constructor() {
     const s = localStorage.getItem("state");
@@ -29,6 +32,7 @@ class State {
     if (o && o.version === version) {
       Object.assign(this, o);
     }
+    this.persist();
   }
 
   public persist() {

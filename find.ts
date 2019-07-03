@@ -90,7 +90,7 @@ async function getBookCover(bid: string): Promise<HTMLElement | null> {
     const link: HTMLAnchorElement = item.querySelector("a");
     link.setAttribute("href", prefix + link.getAttribute("href"));
     // add the favorites indicator
-    if (state.favIds.indexOf(bid) >= 0) {
+    if (state.fav.bookIds.indexOf(bid) >= 0) {
       item.classList.add("F");
     }
   }
@@ -100,10 +100,10 @@ async function getBookCover(bid: string): Promise<HTMLElement | null> {
 let ids: BookSet;
 
 async function find() {
-  if (state.mode == "choose") {
+  if (state.mode === "choose" || state.mode === "edit") {
     state.displayedIds = [];
     state.page = 0;
-    ids = new ArraySet(state.favIds);
+    ids = new ArraySet(state.fav.bookIds);
   } else {
     const terms = getQueryTerms();
     terms.push("AllAvailable");
@@ -233,13 +233,13 @@ function toggleFavorite() {
   const selected: HTMLAnchorElement = document.querySelector("li.selected");
   if (selected) {
     const bid = selected.id;
-    const ndx = state.favIds.indexOf(bid);
+    const ndx = state.fav.bookIds.indexOf(bid);
     if (ndx >= 0) {
-      state.favIds.splice(ndx, 1);
+      state.fav.bookIds.splice(ndx, 1);
       selected.classList.remove("F");
     } else {
-      state.favIds.push(bid);
-      state.favIds.sort();
+      state.fav.bookIds.push(bid);
+      state.fav.bookIds.sort();
       selected.classList.add("F");
     }
     state.persist();
@@ -247,17 +247,17 @@ function toggleFavorite() {
 }
 
 async function init() {
-  /* fetch configuration for the content */
-  config = await (await fetch("content/config.json")).json();
-
   /* restore page and text color */
   document.documentElement.style.setProperty("--page-color", state.pageColor);
   document.documentElement.style.setProperty("--text-color", state.textColor);
   document.body.setAttribute("data-buttonsize", state.buttonSize);
 
+  /* fetch configuration for the content */
+  config = await (await fetch("content/config.json")).json();
+
   const form = document.querySelector("form");
   if (form) {
-    state.mode = "find";
+    if (state.mode !== "edit") state.mode = "find";
 
     /* handle searches */
     form.addEventListener("submit", e => {
@@ -265,6 +265,7 @@ async function init() {
       updateState();
       state.displayedIds = [];
       state.page = 0;
+      state.mode = "find";
       state.persist();
       find();
     });
