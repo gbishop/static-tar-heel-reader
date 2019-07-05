@@ -251,13 +251,6 @@ for path, group in itertools.groupby(ndx, lambda v: v["path"]):
     back = path
     i += 1
 
-# write the front page
-with open(osp.join(OUT, "index.html"), "wt", encoding="utf-8") as fp:
-    wtemplate = open("welcome.mustache", "rt").read()
-    view = dict(start=osp.relpath(ipaths[0], OUT))
-    html = pystache.render(wtemplate, view)
-    fp.write(html)
-
 # write the word indexes
 WOUT = osp.join(CONTENT, "index")
 os.makedirs(WOUT, exist_ok=True)
