@@ -102,3 +102,40 @@ a.hidden {
 body[data-buttonsize="none"] a.selected {
   display: block;
 }
+
+a#menu {
+  float: left;
+  height: 48px;
+}
+
+.hearts #list li:after {
+  content: "";
+  display: block;
+  position: absolute; /* could also be absolute */
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  background: no-repeat center / 10em url(images/FavoriteNoOverlay.png);
+}
+
+.hearts #list li.F:after {
+  content: "";
+  display: block;
+  position: absolute; /* could also be absolute */
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  background: no-repeat center / 10em url(images/FavoriteYesOverlay.png);
+}
+
+#heart {
+  float: right;
+  height: 48px;
+  border: 0;
+  background: transparent;
+  margin-top: 0;
+}

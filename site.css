@@ -96,7 +96,7 @@ nav a {
   border: 2px outset buttonface;
 }
 
-h1:first-of-type {
+h1.title {
   text-align: center;
   height: 48px;
   margin-top: 0;

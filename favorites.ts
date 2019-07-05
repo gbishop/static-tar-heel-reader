@@ -155,6 +155,17 @@ async function init() {
     }
   });
 
+  /* trigger change in name field if the user hits enter */
+  window.addEventListener("keydown", e => {
+    if (e.code != "Enter") {
+      return;
+    }
+    const t = e.target as HTMLElement;
+    if (t.matches("input[name=name]")) {
+      t.blur();
+    }
+  });
+
   /* read button */
   document.querySelector("#read").addEventListener("click", async e => {
     const t = e.target as HTMLElement;

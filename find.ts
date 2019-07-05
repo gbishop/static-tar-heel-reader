@@ -229,8 +229,7 @@ function activateCurrent(e: KeyboardEvent) {
 }
 
 /* toggle favorite on currently selected book */
-function toggleFavorite() {
-  const selected: HTMLAnchorElement = document.querySelector("li.selected");
+function toggleFavorite(selected: HTMLElement) {
   if (selected) {
     const bid = selected.id;
     const ndx = state.fav.bookIds.indexOf(bid);
@@ -281,6 +280,7 @@ async function init() {
       state.displayedIds = [];
     }
     state.mode = "choose";
+    document.querySelector("h1.title").innerHTML = state.fav.name;
   }
 
   /* enable stepping through pages of results */
@@ -313,9 +313,26 @@ async function init() {
     } else if (e.code == "ArrowLeft" || e.code == "Enter") {
       activateCurrent(e);
     } else if (e.key == "f" && state.mode == "find") {
-      toggleFavorite();
+      const selected: HTMLAnchorElement = document.querySelector("li.selected");
+      toggleFavorite(selected);
     }
   });
+
+  /* toggle favorite using the mouse in favorite selection mode */
+  document.querySelector("#list").addEventListener("click", e => {
+    const t = e.target as HTMLElement;
+    if (t.matches("#list li")) {
+      toggleFavorite(t);
+    }
+  });
+
+  /* toggle favorite selection mode */
+  const heart = document.querySelector("#heart");
+  if (heart) {
+    heart.addEventListener("click", e => {
+      document.body.classList.toggle("hearts");
+    });
+  }
 
   find();
 }
