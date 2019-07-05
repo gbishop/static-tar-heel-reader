@@ -1,0 +1,15 @@
+{
+  "name": "Tarheel Reader",
+  "short_name": "THR",
+  "icons": [
+	{
+	"src": "/content/well.png",
+	  "sizes":"512x512",
+	  "type": "image/png"
+	}
+  ],
+  "start_url": "/content/0/index.html",
+  "display": "standalone",
+  "background_color": "#3E4EB8",
+  "theme_color": "#2F3BA2"
+}

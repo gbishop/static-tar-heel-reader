@@ -8,6 +8,8 @@ module.exports = {
   entry: {
     find: './find.ts',
     book: './book.ts',
+	index: './index.ts',
+	worker: './service-worker.ts',
     settings: './settings.ts',
     favorites: './favorites.ts',
   },
@@ -36,4 +38,5 @@ module.exports = {
       },
     ],
   },
+  devtool: 'eval-source-map',
 };
