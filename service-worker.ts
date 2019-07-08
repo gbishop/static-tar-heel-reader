@@ -1,5 +1,3 @@
-import { RangeSet } from "./BookSet";
-
 importScripts(
   "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js"
 );
@@ -10,7 +8,7 @@ workbox.loadModule("workbox-strategies");
 workbox.loadModule("workbox-precaching");
 
 workbox.routing.registerRoute(
-  /.jpg/,
+  /.jpg|.png/,
   new workbox.strategies.CacheFirst({
     cacheName: "img-cache",
     plugins: [
@@ -58,11 +56,11 @@ interface Config {
   last: string; // id of last book
 }
 
-// Fetches the available IDs. For offline case, can just generate a RangeSet.
+// Fetches the available IDs.
 async function getAllAvailableIDs(): Promise<string> {
   if (navigator.onLine) {
     let id_req = await fetch("/content/index/AllAvailable");
-    if (id_req.ok){
+    if (id_req.ok) {
       return id_req.text();
     }
   }
