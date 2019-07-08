@@ -29,6 +29,9 @@ import { stem } from "stemr";
 
 import swipe from "./swipe";
 
+import { registerServiceWorker } from "./start-sw";
+
+
 import {
   BookSet,
   Intersection,
@@ -253,6 +256,9 @@ async function init() {
 
   /* fetch configuration for the content */
   config = await (await fetch("content/config.json")).json();
+
+  /* register service worker. */
+  registerServiceWorker();
 
   const form = document.querySelector("form");
   if (form) {
