@@ -1,6 +1,6 @@
 import { registerServiceWorker } from "./start-sw";
 
-function init(){
+async function init(){
     registerServiceWorker();
 }
 
