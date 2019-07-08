@@ -31,6 +31,20 @@ workbox.routing.registerRoute(
   })
 );
 
+workbox.precaching.precacheAndRoute([
+    '/find.html',
+    '/find.css',
+    '/index.html',
+    '/choose.html',
+    '/images/favorite.png',
+    '/images/reviewed.png',
+    '/images/BackArrow.png',
+    '/images/NextArrow.png',
+    '/book.js',
+    '/site.css',
+
+]);
+
 workbox.routing.registerRoute(/.\/content\/index\/AllAvailable$/, async () => {
   let ids = getAllAvailableIDs();
   return new Response(await ids);
