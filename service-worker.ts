@@ -2,7 +2,7 @@ importScripts(
   "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js"
 );
 
-declare var workbox: any;
+declare const workbox: typeof import("workbox-sw");
 
 workbox.loadModule("workbox-strategies");
 workbox.loadModule("workbox-precaching");
@@ -47,14 +47,6 @@ workbox.routing.registerRoute(
     ]
   })
 );
-
-interface Config {
-  base: number; // base of the encoding used for ids
-  digits: number; // number of digits in each id
-  lastReviewed: string; // id of last reviewed book
-  first: string; // id of first book
-  last: string; // id of last book
-}
 
 // Fetches the available IDs.
 async function getAllAvailableIDs(): Promise<string> {
