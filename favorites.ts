@@ -2,6 +2,7 @@
 
 import { openDB, DBSchema } from "idb";
 import state from "./state";
+import { registerServiceWorker } from "./start-sw";
 
 interface IFavorites {
   id?: number;
@@ -105,6 +106,8 @@ function updateState(fav: IFavorites) {
 
 /* initialize the page */
 async function init() {
+  registerServiceWorker();
+
   const db = await openFavorites();
   // update the favorites from the state
   db.put("favorites", state.fav);
