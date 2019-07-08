@@ -25,6 +25,7 @@ module.exports = {
       errorDetails: true,
     },
     overlay: true,
+    public: 'gb.cs.unc.edu:8080',
     proxy: [
       {
         context: ['/content', 'config.json'],
