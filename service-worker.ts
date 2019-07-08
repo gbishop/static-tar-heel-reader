@@ -61,22 +61,10 @@ interface Config {
 // Fetches the available IDs. For offline case, can just generate a RangeSet.
 async function getAllAvailableIDs(): Promise<string> {
   if (navigator.onLine) {
-    let config: Config = await (await fetch("content/config.json")).json();
-    let range = new RangeSet(
-      config.first,
-      config.last,
-      config.digits,
-      config.base
-    );
-    let ids = "";
-    while (true) {
-      let curr = range.next();
-      if (!curr) {
-        break;
-      }
-      ids += curr;
+    let id_req = await fetch("/content/index/AllAvailable");
+    if (id_req.ok){
+      return id_req.text();
     }
-    return ids;
   }
 
   // Offline case.
