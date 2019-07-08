@@ -59,30 +59,32 @@ async function getAllAvailableIDs(): Promise<string> {
 
   // Offline case.
   let ids: string = "";
-  return new Promise((resolve, reject) => {
-    caches.open("html-cache").then(cache => {
-      cache.keys().then(keys => {
-        if (keys.length == 0) {
-          resolve("");
-        }
 
-        keys.forEach((request, index, array) => {
-          let url = request.url;
-          if (!url.includes("content")) {
-            return;
-          }
-          let tokens = url
-            .substring(url.search("content") + "content".length)
-            .split("/");
-          if (!tokens[tokens.length - 1].match(/\d.html/)) {
-            return;
-          }
-          let id = tokens.join("");
-          id = id.substring(0, id.length - 5);
-          ids += id;
-        });
-        resolve(ids);
-      });
-    });
+  let cache = await caches.open("html-cache");
+  let keys = await cache.keys();
+
+  if (keys.length == 0) {
+    return "";
+  }
+
+  keys.forEach((request, index, array) => {
+    let url = request.url;
+    if (!url.includes("content")) {
+      return;
+    }
+
+    let tokens = url
+        .substring(url.search("content") + "content".length)
+        .split("/");
+
+    if (!tokens[tokens.length -1].match(/\d.html/)){
+      return;
+    }
+
+    let id = tokens.join("");
+    id = id.substring(0, id.length - 5);
+    ids += id;
   });
+
+  return ids;
 }
