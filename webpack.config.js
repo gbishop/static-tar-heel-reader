@@ -1,20 +1,24 @@
-var path = require('path');
+var path = require("path");
 
 module.exports = {
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: [".ts", ".js"]
   },
-  mode: 'development',
+  mode: "development",
   entry: {
-    find: './find.ts',
-    book: './book.ts',
+    find: "./find.ts",
+    book: "./book.ts",
+    index: './index.ts',
+    worker: "./service-worker.ts",
+    settings: "./settings.ts",
+    favorites: "./favorites.ts"
   },
   output: {
-    filename: '[name].js',
-    path: path.resolve(__dirname, '.'),
+    filename: "[name].js",
+    path: path.resolve(__dirname, ".")
   },
   module: {
-    rules: [{test: /\.ts$/, loader: 'ts-loader'}],
+    rules: [{ test: /\.ts$/, loader: "ts-loader" }]
   },
   devServer: {
     stats: {
@@ -22,17 +26,17 @@ module.exports = {
       hash: false,
       chunks: false,
       errors: true,
-      errorDetails: true,
+      errorDetails: true
     },
     overlay: true,
-    public: 'gb.cs.unc.edu:8080',
     proxy: [
       {
-        context: ['/content', 'config.json'],
-        target: 'https://gb.cs.unc.edu/static/tiny',
+        context: ["/content", "config.json"],
+        target: "https://gb.cs.unc.edu/static/tiny",
         secure: false,
-        changeOrigin: true,
-      },
-    ],
+        changeOrigin: true
+      }
+    ]
   },
+  devtool: "eval-source-map"
 };

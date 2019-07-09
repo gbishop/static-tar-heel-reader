@@ -1,10 +1,10 @@
-@import url('site.css');
+@import url("site.css");
 
 ul {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-evenly;
   padding: 0;
 }
 
@@ -16,11 +16,11 @@ li {
   border-radius: 0.25em;
   text-align: center;
   position: relative;
-  margin: 0.1em;
   box-shadow: 0.1em 0.1em 0.1em #aaa;
+  margin-bottom: 0.5em;
 }
 
-span {
+li span {
   position: absolute;
   right: 0;
   bottom: 0;
@@ -28,24 +28,24 @@ span {
   font-size: 0.6em;
 }
 
-p {
+li p {
   font-size: 0.8em;
 }
 
-h1 {
+li h1 {
   font-size: 1em;
   margin-top: 0;
   text-align: center;
 }
 
-a {
+li a {
   display: block;
   text-decoration: none;
   height: 100%;
   color: inherit;
 }
 
-img {
+li a img {
   flex: 1;
   object-fit: contain;
   min-height: 0;
@@ -53,30 +53,30 @@ img {
   max-width: 6em;
 }
 
-a.R {
+li.R {
   background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png);
 }
 
-a.C {
+li.C {
   background: no-repeat bottom 2em left 1em / 1em url(images/caution.png);
 }
 
-a.C.R {
+li.C.R {
   background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
     no-repeat bottom 2em left 1em / 1em url(images/caution.png);
 }
 
-a.R.F {
+li.R.F {
   background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
     no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
 }
 
-a.C.F {
+li.C.F {
   background: no-repeat bottom 2em left 1em / 1em url(images/caution.png),
     no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
 }
 
-a.C.R.F {
+li.C.R.F {
   background: no-repeat bottom 1em left 1em / 1em url(images/reviewed.png),
     no-repeat bottom 2em left 1em / 1em url(images/caution.png),
     no-repeat bottom 3em left 1em / 1em url(images/favorite.png);
@@ -99,31 +99,43 @@ a.hidden {
   display: none;
 }
 
-details {
-  position: fixed;
-  left: 0;
-  top: 0;
-  background-color: white;
-  color: black;
-  z-index: 10;
-}
-
-details div {
-  border: 1px solid black;
-  padding: 1em;
-  box-shadow: 0.2em 0.2em 0.2em black;
-}
-
-details label {
+body[data-buttonsize="none"] a.selected {
   display: block;
 }
 
-details input {
-  width: 2em;
+a#menu {
+  float: left;
+  height: 48px;
 }
 
-summary img {
-  width: 1.5em;
-  height: 1.5em;
-  margin-left: -0.5em;
+.hearts #list li:after {
+  content: "";
+  display: block;
+  position: absolute; /* could also be absolute */
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  background: no-repeat center / 10em url(images/FavoriteNoOverlay.png);
+}
+
+.hearts #list li.F:after {
+  content: "";
+  display: block;
+  position: absolute; /* could also be absolute */
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  background: no-repeat center / 10em url(images/FavoriteYesOverlay.png);
+}
+
+#heart {
+  float: right;
+  height: 48px;
+  border: 0;
+  background: transparent;
+  margin-top: 0;
 }

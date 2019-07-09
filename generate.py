@@ -251,13 +251,6 @@ for path, group in itertools.groupby(ndx, lambda v: v["path"]):
     back = path
     i += 1
 
-# write the front page
-with open(osp.join(OUT, "index.html"), "wt", encoding="utf-8") as fp:
-    wtemplate = open("welcome.mustache", "rt").read()
-    view = dict(start=osp.relpath(ipaths[0], OUT))
-    html = pystache.render(wtemplate, view)
-    fp.write(html)
-
 # write the word indexes
 WOUT = osp.join(CONTENT, "index")
 os.makedirs(WOUT, exist_ok=True)
@@ -268,6 +261,10 @@ for word in wordToSlugs.keys():
     ids = sorted([bookmap[slug][0] for slug in wordToSlugs[word]])
     with open(osp.join(WOUT, word), "wt", encoding="utf-8") as fp:
         fp.write("".join(ids))
+
+# write the AllAvailable file
+with open(osp.join(WOUT, 'AllAvailable'), "wt", encoding='utf-8') as fp:
+    fp.write('%s-%s' % ("0" * Dbooks, last))
 
 # record parameters needed by the js
 config = {
