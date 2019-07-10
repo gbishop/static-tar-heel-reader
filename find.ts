@@ -31,7 +31,6 @@ import swipe from "./swipe";
 
 import { registerServiceWorker } from "./start-sw";
 
-
 import {
   BookSet,
   Intersection,
@@ -313,10 +312,10 @@ async function init() {
 
   /* switch control based on keys */
   window.addEventListener("keydown", e => {
-    if (e.code == "ArrowRight" || e.code == "Space") {
+    if (e.key == "ArrowRight" || e.key == "Space") {
       e.preventDefault();
       moveToNext();
-    } else if (e.code == "ArrowLeft" || e.code == "Enter") {
+    } else if (e.key == "ArrowLeft" || e.key == "Enter") {
       activateCurrent(e);
     } else if (e.key == "f" && state.mode == "find") {
       const selected: HTMLAnchorElement = document.querySelector("li.selected");
