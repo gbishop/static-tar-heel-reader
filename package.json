@@ -6,7 +6,7 @@
     "build": "webpack",
     "production": "webpack --mode=production",
     "start": "webpack-dev-server",
-    "local": "webpack-dev-server --host 0.0.0.0 --public gb.cs.unc.edu:8080",
+    "local": "webpack-dev-server --host 0.0.0.0 --public gb.cs.unc.edu/80",
     "tsc": "tsc",
     "test": "jest"
   },
