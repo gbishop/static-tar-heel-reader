@@ -19,6 +19,8 @@ import pandas as pd
 import myArgs
 import math
 from sqlitedict import SqliteDict
+from nltk.corpus import stopwords
+import difflib
 
 args = myArgs.Parse(base=16, Nselect=100, minPages=6, maxPages=20, out=str)
 
@@ -48,6 +50,68 @@ selected = reviewed + unreviewed
 # activate the spell checkers
 spell = aspell.Speller("lang", "en")
 spell2 = SpellChecker()
+
+
+# Get the dicitonary (onomatopoeias + person names + wikipedia words)
+word_dictionary = set()
+with open('spelling/dictionary.txt', 'r') as fp:
+    lines = fp.readlines()
+    word_dictionary.update([line.replace("\n", "") for line in lines if line[0] != "#"])
+
+# Get misspelled words
+# Input: a book
+# Output: a set of Misspelled words
+def getMisspelled(book):
+    wordRe = re.compile(r"[a-zA-Z]+\'[a-zA-Z]+|[a-zA-Z]+")
+    stop_words = set(stopwords.words('english')) ## Get stop_words
+    misspelled = set()
+    for page in book["pages"]:
+        text = contractions.fix(page['text']) # Replace contractions; e.g., can't --> cannot // won't --> will not
+        text = text.replace("'s", "") # Remove 's (apostrophe and s)
+        words = wordRe.findall(text) # Tokenize a sentence into words
+        words = list(set(words)) # Remove duplicates
+        words = [w for w in words if not w in stop_words] ## Remove stop words
+        words = [w for w in words if not w in word_dictionary] ## Remove correctly spelled words
+        for word in words:
+            ## If the word is not found from aspell libary and spellchecker libary,
+            ## add the word to the index object
+            if not spell.check(word) and not spell2.known([word]):
+            #if not spell.check(word) and len(spell2.unknown([word])) >= 1 :
+                misspelled.add(word)
+    return misspelled
+
+# Get misspelled words in a set
+misspelled = set()
+for book in selected:
+    misspelled.update(getMisspelled(book))
+
+
+# Get onomatopoeias
+onomatopoeia = set()
+with open('spelling/onomatopoeia.txt', 'r') as fp:
+    lines = fp.readlines()
+    onomatopoeia.update([line.replace("\n", "") for line in lines])
+# Get wikipedia words
+wikipedia = set()
+with open('spelling/wikipedia.txt', 'r') as fp:
+    lines = fp.readlines()
+    wikipedia.update([line.replace("\n", "") for line in lines])
+
+# Get suggestions for misspelled words
+# Input: a set of misspelled words
+# Output: a set of misspelled words paired with 2 word suggestions
+def getSuggestions(misspelled):
+    suggestions = {}
+    for word in sorted(misspelled):
+        temp = set()
+        temp.update(onomatopoeia)
+        temp.update(wikipedia)
+        temp.update(spell.suggest(word))
+        suggestions[word] = difflib.get_close_matches(word, temp, n=2, cutoff = 0.6)
+    return suggestions
+
+suggestions = getSuggestions(misspelled)
+
 
 
 def getWords(book):
@@ -311,5 +375,3 @@ for fname in [
         opath = osp.join(OUT, fname)
         os.makedirs(osp.dirname(opath), exist_ok=True)
         shutil.copyfile(fname, opath)
-
-
