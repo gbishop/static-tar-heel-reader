@@ -65,7 +65,7 @@ workbox.routing.registerRoute(
 // Fetches the available IDs.
 async function getAllAvailableIDs(): Promise<string> {
   if (navigator.onLine) {
-    let id_req = await fetch("/content/index/AllAvailable");
+    let id_req = await fetch("./content/index/AllAvailable");
     if (id_req.ok) {
       return id_req.text();
     }

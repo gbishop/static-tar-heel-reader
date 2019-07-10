@@ -279,19 +279,33 @@ with open(osp.join(CONTENT, "config.json"), "wt") as fp:
 
 # copy the extras
 for fname in [
-        "site.css",
-        "index.css",
         "book.css",
         "book.js",
+        "choose.html",
+        "favorites.css",
+        "favorites.html",
+        "favorites.js",
+        "find.css",
         "find.html",
         "find.js",
-        "find.css",
+        "index.css",
+        "index.html",
+        "index.js",
+        "manifest.json",
+        "settings.css",
+        "settings.html",
+        "settings.js",
+        "site.css",
+        "worker.js",
         "images/BackArrow.png",
-        "images/NextArrow.png",
-        "images/favorite.png",
         "images/caution.png",
+        "images/FavoriteNoOverlay.png",
+        "images/favorite.png",
+        "images/FavoriteYesOverlay.png",
+        "images/NextArrow.png",
         "images/reviewed.png",
         "images/settings.png",
+        "images/well.png",
 ]:
     if osp.exists(fname):
         opath = osp.join(OUT, fname)
