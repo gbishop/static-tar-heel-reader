@@ -49,7 +49,7 @@ window.addEventListener("load", () => {
 
   /* Allow reading the book with switches */
   window.addEventListener("keydown", e => {
-    if (e.code == "ArrowRight" || e.code == "Space") {
+    if (e.key == "ArrowRight" || e.key == "Space") {
       // next page or next menu item
       e.preventDefault();
       const next = document.querySelector("section:target a.next");
@@ -58,7 +58,7 @@ window.addEventListener("load", () => {
       } else {
         moveToNext();
       }
-    } else if (e.code == "ArrowLeft" || e.code == "Enter") {
+    } else if (e.key == "ArrowLeft" || e.key == "Enter") {
       // back one page or activate menu
       e.preventDefault();
       const back = document.querySelector("section:target a.back");
