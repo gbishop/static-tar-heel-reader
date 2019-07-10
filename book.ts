@@ -2,6 +2,7 @@
 
 import state from "./state";
 import swipe from "./swipe";
+import speak from "./speech";
 
 window.addEventListener("load", () => {
   /* restore page and text color */
@@ -77,4 +78,21 @@ window.addEventListener("load", () => {
     const link: HTMLAnchorElement = document.querySelector(selector);
     if (link) link.click();
   });
+
+  /* speak the text on the page */
+  function read() {
+    const node = document.querySelector(
+      "section:target h1, section:target p"
+    ) as HTMLElement;
+    console.log("node", node);
+    if (node) {
+      const text = node.innerText;
+      console.log("text", text);
+      speak(text);
+    }
+  }
+
+  /* speak the text when the hash changes */
+  window.addEventListener("hashchange", read);
+  read();
 });

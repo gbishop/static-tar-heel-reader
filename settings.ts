@@ -1,4 +1,5 @@
 import state from "./state";
+import { getVoices } from "./speech";
 
 function initControl(
   selector: string,
@@ -12,6 +13,25 @@ function initControl(
       update((e.target as HTMLInputElement).value);
       state.persist();
     });
+  }
+}
+
+async function populateVoiceList() {
+  const voices = await getVoices();
+  const voiceSelect = document.querySelector("select[name=voices]");
+
+  for (var i = 0; i < voices.length; i++) {
+    var option = document.createElement("option");
+    option.textContent = voices[i].name + " (" + voices[i].lang + ")";
+
+    if (voices[i].default) {
+      option.textContent += " -- DEFAULT";
+    }
+
+    option.setAttribute("value", voices[i].name);
+    option.setAttribute("data-lang", voices[i].lang);
+    option.setAttribute("data-name", voices[i].name);
+    voiceSelect.appendChild(option);
   }
 }
 
@@ -29,6 +49,14 @@ window.addEventListener("load", () => {
     "select[name=buttons]",
     state.buttonSize,
     v => (state.buttonSize = v)
+  );
+  /* setup the voices selector */
+  populateVoiceList().then(() =>
+    initControl(
+      "select[name=voices]",
+      state.speech.voice,
+      v => (state.speech.voice = v)
+    )
   );
 
   /* go back to where we came from */

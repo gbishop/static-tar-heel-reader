@@ -1,6 +1,6 @@
 /* Collect state together and allow it to persist */
 
-const version = 3; /* version of the persistent data */
+const version = 4; /* version of the persistent data */
 
 class State {
   public mode: "find" | "choose" | "edit";
@@ -23,7 +23,14 @@ class State {
   public fav = {
     id: 1,
     name: "Favorites",
-    bookIds: <string[]>[],
+    bookIds: <string[]>[]
+  };
+  /* speech related values */
+  public speech = {
+    voice: "silent",
+    rate: 1, // 0.1 to 10
+    pitch: 1, // 0 to 2
+    lang: "en-US"
   };
 
   constructor() {
