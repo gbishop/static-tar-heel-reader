@@ -2,18 +2,19 @@ import {
   BookSet,
   Intersection,
   Difference,
+  Limit,
   RangeSet,
-  StringSet,
-} from './BookSet';
+  StringSet
+} from "./BookSet";
 
 const digits = 2;
 const base = 16;
 const sets = [
-  '', // empty
-  '1A293648596E', // boy
-  '3662656E6F828A94AF', // girl
-  '1950727D8587', // cat
-  '02131B29364C50585A686E717A9A9C', // dog
+  "", // empty
+  "1A293648596E", // boy
+  "3662656E6F828A94AF", // girl
+  "1950727D8587", // cat
+  "02131B29364C50585A686E717A9A9C" // dog
 ];
 let setset = [];
 for (const s1 of sets) {
@@ -23,7 +24,7 @@ for (const s1 of sets) {
 }
 
 /* limits for RangeSets */
-const limits = ['01', '36', '6E', 'AF', '9C', 'AA'];
+const limits = ["01", "36", "6E", "AF", "9C", "AA"];
 let setlimit = [];
 let limitset = [];
 for (const s1 of sets) {
@@ -82,21 +83,19 @@ function limit(A: string[], l: string) {
   return A.filter(s => s <= l);
 }
 
-test.each(sets)('StringSet(%s)', s => {
+test.each(sets)("StringSet(%s)", s => {
   expect(pull(new StringSet(s, digits))).toEqual(s2a(s));
 });
 
-test.each(setset)('Intersection(%s, %s)', (s1, s2) => {
+test.each(setset)("Intersection(%s, %s)", (s1, s2) => {
   expect(
-    pull(
-      new Intersection(new StringSet(s1, digits), new StringSet(s2, digits)),
-    ),
+    pull(new Intersection(new StringSet(s1, digits), new StringSet(s2, digits)))
   ).toEqual(intersect(s1, s2));
 });
 
-test.each(setset)('Difference(%s, %s)', (s1, s2) => {
+test.each(setset)("Difference(%s, %s)", (s1, s2) => {
   expect(
-    pull(new Difference(new StringSet(s1, digits), new StringSet(s2, digits))),
+    pull(new Difference(new StringSet(s1, digits), new StringSet(s2, digits)))
   ).toEqual(difference(s1, s2));
 });
 
@@ -105,9 +104,9 @@ test.each(setlimit)("Intersection(%s, RangeSet('00', %s))", (s, l) => {
     pull(
       new Intersection(
         new StringSet(s, digits),
-        new RangeSet('00', l, digits, base),
-      ),
-    ),
+        new RangeSet("00", l, digits, base)
+      )
+    )
   ).toEqual(limit(s2a(s), l));
 });
 
@@ -116,8 +115,14 @@ test.each(limitset)("Intersection(RangeSet('00', %s), %s)", (l, s) => {
     pull(
       new Intersection(
         new StringSet(s, digits),
-        new RangeSet('00', l, digits, base),
-      ),
-    ),
+        new RangeSet("00", l, digits, base)
+      )
+    )
   ).toEqual(limit(s2a(s), l));
+});
+
+test.each(setlimit)("Limit(%s, %s)", (s, l) => {
+  expect(pull(new Limit(new StringSet(s, digits), l))).toEqual(
+    limit(s2a(s), l)
+  );
 });

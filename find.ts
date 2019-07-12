@@ -35,6 +35,7 @@ import {
   BookSet,
   Intersection,
   Difference,
+  Limit,
   RangeSet,
   StringSet,
   ArraySet
@@ -128,21 +129,8 @@ async function find() {
       }
       return new Intersection(p, c);
     });
-    /*
-    if (!ids) {
-      ids = new RangeSet(config.first, config.last, config.digits, config.base);
-    }
-    */
     if (state.reviewed) {
-      ids = new Intersection(
-        new RangeSet(
-          config.first,
-          config.lastReviewed,
-          config.digits,
-          config.base
-        ),
-        ids
-      );
+      ids = new Limit(ids, config.lastReviewed);
     }
     if (state.audience == "E") {
       const caution = await getIndexForTerm("CAUTION");
