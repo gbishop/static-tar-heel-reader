@@ -1,6 +1,6 @@
 /* Collect state together and allow it to persist */
 
-const version = 4; /* version of the persistent data */
+const version = 6; /* version of the persistent data */
 
 class State {
   public mode: "find" | "choose" | "edit";
@@ -8,13 +8,6 @@ class State {
   public reviewed = true;
   public category = "";
   public audience = "E";
-  /* the page of results we are currently displaying */
-  public page = 0;
-  /* displayedIds is a list of the ids we have shown to the user. We
-   * can't backup in the BookSets so we remember all the ones we have
-   * seen for this query so that we can allow paging backward in results.
-   */
-  public displayedIds: string[] = [];
   public booksPerPage = 9;
   public pageColor = "#fff";
   public textColor = "#000";

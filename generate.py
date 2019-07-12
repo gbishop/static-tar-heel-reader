@@ -249,6 +249,7 @@ for progress, book in enumerate(books):
         )
     pages[-1]["next"] = "#done"
     view["pages"] = pages
+    view["bid"] = bid
     html = pystache.render(template, view)
     os.makedirs(osp.dirname(bpath), exist_ok=True)
     with open(bpath, "wt", encoding="utf-8") as fp:

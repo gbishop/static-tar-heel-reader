@@ -39,7 +39,6 @@ window.addEventListener("load", () => {
   /* link the controls to the state */
   initControl("input[name=bpp]", "" + state.booksPerPage, v => {
     const newbpp = parseInt(v);
-    state.page = Math.floor((state.page * state.booksPerPage) / newbpp);
     state.booksPerPage = newbpp;
   });
 

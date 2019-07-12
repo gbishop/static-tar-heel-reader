@@ -13,7 +13,8 @@ window.addEventListener("load", () => {
   /* fix the links back to point to the find page.
    * should this be conditional on coming from there?
    */
-  const backTo = state.mode == "find" ? "../../find.html" : "../../choose.html";
+  const bid = document.body.id;
+  const backTo = (state.mode == "find" ? "../../find.html" : "../../choose.html") + '#' + bid;
   document
     .querySelectorAll("a[href^='./']")
     .forEach((link: HTMLAnchorElement) => (link.href = backTo));
