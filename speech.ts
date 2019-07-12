@@ -5,10 +5,8 @@ let voices: SpeechSynthesisVoice[] = [];
 export function getVoices(): Promise<SpeechSynthesisVoice[]> {
   return new Promise((resolve, reject) => {
     if (voices.length > 0) {
-      console.log("got voices", voices);
       resolve(voices);
     } else {
-      console.log("waiting for voices");
       voices = speechSynthesis.getVoices();
       if (voices.length > 0) {
         resolve(voices);
@@ -26,6 +24,7 @@ async function speak(text: string) {
   }
   const voices = (await getVoices()).filter(v => v.name === state.speech.voice);
   if (voices.length) {
+    speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.voice = voices[0];
     utterance.rate = state.speech.rate;
