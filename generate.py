@@ -286,6 +286,10 @@ for word in wordToSlugs.keys():
     with open(osp.join(WOUT, word), "wt", encoding="utf-8") as fp:
         fp.write("".join(ids))
 
+# make sure CAUTION exists
+with open(osp.join(WOUT, "CAUTION"), "at", encoding="utf-8") as fp:
+    fp.write("")
+
 # write the AllAvailable file
 with open(osp.join(WOUT, "AllAvailable"), "wt", encoding="utf-8") as fp:
     fp.write("%s-%s" % ("0" * Dbooks, last))
