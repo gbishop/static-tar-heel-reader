@@ -4,7 +4,7 @@
   "icons": [
     {
       "src": "images/well.png",
-      "sizes": "64x64",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ],
