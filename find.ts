@@ -322,6 +322,10 @@ async function init() {
 
   /* switch control based on keys */
   window.addEventListener("keydown", e => {
+    const t = e.target as HTMLElement;
+    if (t.matches("input,select,button")) {
+      return;
+    }
     if (e.key == "ArrowRight" || e.key == "Space") {
       e.preventDefault();
       moveToNext();
