@@ -295,7 +295,7 @@ with open(osp.join(WOUT, "AllAvailable"), "wt", encoding="utf-8") as fp:
     fp.write("%s-%s" % ("0" * Dbooks, last))
 
 # write out a list of the images for possible prefetch...
-with open(osp.join(OUT, "images.json"), "wt", encoding="utf-8") as fp:
+with open(osp.join(CONTENT, "images.json"), "wt", encoding="utf-8") as fp:
     json.dump([osp.relpath(path, OUT) for path in imagemap.values()], fp)
 
 # record parameters needed by the js
