@@ -133,9 +133,15 @@ a#menu {
 }
 
 #heart {
-  float: right;
+  position: absolute;
+  right: 0;
+  top: 0;
   height: 48px;
   border: 0;
   background: transparent;
   margin-top: 0;
+}
+
+#heart img {
+  width: 48px;
 }
