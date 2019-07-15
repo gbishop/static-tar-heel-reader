@@ -79,6 +79,11 @@ details {
   font-size: 4px;
 }
 
+details summary img {
+  width: 48px;
+  height: 48px;
+}
+
 details nav {
   font-size: 1rem;
   border: 1px solid black;

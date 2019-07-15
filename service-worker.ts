@@ -32,17 +32,16 @@ workbox.routing.registerRoute(
 );
 
 workbox.precaching.precacheAndRoute([
-    './find.html',
-    './find.css',
-    './index.html',
-    './choose.html',
-    './images/favorite.png',
-    './images/reviewed.png',
-    './images/BackArrow.png',
-    './images/NextArrow.png',
-    './book.js',
-    './site.css',
-
+  "./find.html",
+  "./find.css",
+  "./index.html",
+  "./choose.html",
+  "./images/favorite.png",
+  "./images/reviewed.png",
+  "./images/BackArrow.png",
+  "./images/NextArrow.png",
+  "./book.js",
+  "./site.css"
 ]);
 
 workbox.routing.registerRoute(/.\/content\/index\/AllAvailable$/, async () => {
@@ -88,10 +87,10 @@ async function getAllAvailableIDs(): Promise<string> {
     }
 
     let tokens = url
-        .substring(url.search("content") + "content".length)
-        .split("/");
+      .substring(url.search("content") + "content".length)
+      .split("/");
 
-    if (!tokens[tokens.length -1].match(/\d.html/)){
+    if (!tokens[tokens.length - 1].match(/\d.html/)) {
       return;
     }
 

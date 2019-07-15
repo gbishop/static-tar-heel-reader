@@ -3,12 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#99badd" />
     <link rel="stylesheet" href="settings.css" />
     <script src="settings.js"></script>
     <title>Settings</title>
   </head>
 
   <body>
+    <details>
+      <summary title="menu"><img src="images/well.png" alt="menu"/></summary>
+      <nav>
+        <a href="favorites.html">Favorites</a>
+        <a href="find.html">Find</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+    </details>
     <h1 class="title">Settings</h1>
     <label>
       <input name="bpp" type="number" min="1" max="30" value="12" />
@@ -47,6 +57,12 @@
         <option value="none">none</option>
       </select>
       Button size
+    </label>
+    <label>
+      <select name="voices">
+        <option value="silent">Silent</option>
+      </select>
+      Voice
     </label>
     <button id="close">Done</button>
   </body>

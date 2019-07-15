@@ -2,6 +2,7 @@
 
 import state from "./state";
 import swipe from "./swipe";
+import speak from "./speech";
 
 window.addEventListener("load", () => {
   /* restore page and text color */
@@ -12,7 +13,8 @@ window.addEventListener("load", () => {
   /* fix the links back to point to the find page.
    * should this be conditional on coming from there?
    */
-  const backTo = state.mode == "find" ? "../../find.html" : "../../choose.html";
+  const bid = document.body.id;
+  const backTo = (state.mode == "find" ? "../../find.html" : "../../choose.html") + '#' + bid;
   document
     .querySelectorAll("a[href^='./']")
     .forEach((link: HTMLAnchorElement) => (link.href = backTo));
@@ -77,4 +79,21 @@ window.addEventListener("load", () => {
     const link: HTMLAnchorElement = document.querySelector(selector);
     if (link) link.click();
   });
+
+  /* speak the text on the page */
+  function read() {
+    const node = document.querySelector(
+      "section:target h1, section:target p"
+    ) as HTMLElement;
+    console.log("node", node);
+    if (node) {
+      const text = node.innerText;
+      console.log("text", text);
+      speak(text);
+    }
+  }
+
+  /* speak the text when the hash changes */
+  window.addEventListener("hashchange", read);
+  read();
 });

@@ -61,6 +61,18 @@ export class Difference implements BookSet {
   }
 }
 
+export class Limit implements BookSet {
+  constructor(public A: BookSet, public limit: string) {}
+  public next(): string {
+    const r = this.A.next();
+    return r <= this.limit ? r : "";
+  }
+  public skipTo(v: string): string {
+    const r = this.A.skipTo(v);
+    return r <= this.limit ? r : "";
+  }
+}
+
 const code = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
 export class RangeSet implements BookSet {

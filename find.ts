@@ -35,10 +35,13 @@ import {
   BookSet,
   Intersection,
   Difference,
+  Limit,
   RangeSet,
   StringSet,
   ArraySet
 } from "./BookSet";
+
+import speak from "./speech";
 
 function getQueryTerms(): string[] {
   const searchBox = document.querySelector("#search") as HTMLInputElement;
@@ -100,11 +103,12 @@ async function getBookCover(bid: string): Promise<HTMLElement | null> {
 }
 
 let ids: BookSet;
+// keep track of the ids we have shown
+const displayedIds = <string[]>[];
+let page = 0;
 
 async function find() {
   if (state.mode === "choose" || state.mode === "edit") {
-    state.displayedIds = [];
-    state.page = 0;
     ids = new ArraySet(state.fav.bookIds);
   } else {
     const terms = getQueryTerms();
@@ -125,28 +129,36 @@ async function find() {
       }
       return new Intersection(p, c);
     });
-    if (!ids) {
-      ids = new RangeSet(config.first, config.last, config.digits, config.base);
-    }
     if (state.reviewed) {
-      ids = new Intersection(
-        new RangeSet(
-          config.first,
-          config.lastReviewed,
-          config.digits,
-          config.base
-        ),
-        ids
-      );
+      ids = new Limit(ids, config.lastReviewed);
     }
     if (state.audience == "E") {
       const caution = await getIndexForTerm("CAUTION");
       ids = new Difference(ids, caution);
     }
-    const start = state.displayedIds[state.displayedIds.length - 1];
-    if (start) {
-      ids.skipTo(start);
+  }
+  displayedIds.length = 0;
+  if (location.hash) {
+    const backFrom = location.hash.slice(1);
+    console.log("skipping to", backFrom);
+    // configure things so we're on the page with the current book
+    while (1) {
+      let id = "";
+      for (let i = 0; i < state.booksPerPage; i++) {
+        id = ids.next();
+        if (!id) {
+          break;
+        }
+        displayedIds.push(id);
+      }
+      console.log("page", displayedIds[displayedIds.length - 1]);
+      if (displayedIds[displayedIds.length - 1] >= backFrom) break;
     }
+    page = Math.max(
+      0,
+      Math.floor(displayedIds.length / state.booksPerPage) - 1
+    );
+    console.log("page", page);
   }
   return render();
 }
@@ -158,14 +170,14 @@ async function render() {
   while ((last = list.lastChild)) list.removeChild(last);
 
   // determine where to start
-  let offset = state.page * state.booksPerPage;
+  let offset = page * state.booksPerPage;
   for (let i = 0; i < state.booksPerPage + 1; i++) {
     const o = i + offset;
-    const bid = state.displayedIds[o] || ids.next();
+    const bid = displayedIds[o] || ids.next();
     if (!bid) {
       break;
     }
-    state.displayedIds[o] = bid;
+    displayedIds[o] = bid;
     if (i >= state.booksPerPage) {
       break;
     }
@@ -175,13 +187,10 @@ async function render() {
   state.persist();
 
   // visibility of back and next buttons
-  document.querySelector("#back").classList.toggle("hidden", state.page <= 0);
+  document.querySelector("#back").classList.toggle("hidden", page <= 0);
   document
     .querySelector("#next")
-    .classList.toggle(
-      "hidden",
-      !state.displayedIds[(state.page + 1) * state.booksPerPage]
-    );
+    .classList.toggle("hidden", !displayedIds[(page + 1) * state.booksPerPage]);
 }
 
 function updateState(): void {
@@ -197,7 +206,7 @@ function updateControls(form: HTMLFormElement): void {}
 /* allow switch (keyboard) selection of books */
 function moveToNext() {
   // get the currently selected if any
-  const selected = document.querySelector(".selected");
+  let selected = document.querySelector(".selected");
   // get all the items we can select
   const selectable = document.querySelectorAll(
     "li, a#back:not(.hidden), a#next:not(.hidden)"
@@ -209,14 +218,21 @@ function moveToNext() {
     selected.classList.remove("selected");
     next = ([].indexOf.call(selectable, selected) + 1) % selectable.length;
   }
+  selected = selectable[next];
   // mark the new one selected
-  selectable[next].classList.add("selected");
+  selected.classList.add("selected");
   // make sure it is visible
-  selectable[next].scrollIntoView({
+  selected.scrollIntoView({
     behavior: "smooth",
     block: "nearest",
     inline: "nearest"
   });
+  const h1 = selected.querySelector("h1");
+  if (h1) {
+    speak(h1.innerText);
+  } else {
+    speak((selected as HTMLElement).innerText);
+  }
 }
 
 /* click the currently selected link */
@@ -267,8 +283,6 @@ async function init() {
     form.addEventListener("submit", e => {
       e.preventDefault();
       updateState();
-      state.displayedIds = [];
-      state.page = 0;
       state.mode = "find";
       state.persist();
       find();
@@ -280,10 +294,6 @@ async function init() {
     form.category.value = state.category;
     form.audience.value = state.audience;
   } else {
-    if (state.mode == "find") {
-      state.page = 0;
-      state.displayedIds = [];
-    }
     state.mode = "choose";
     document.querySelector("h1.title").innerHTML = state.fav.name;
   }
@@ -292,13 +302,13 @@ async function init() {
   document.querySelector("#next").addEventListener("click", e => {
     e.preventDefault();
     (e.target as HTMLElement).classList.remove("selected");
-    state.page += 1;
+    page += 1;
     render();
   });
   document.querySelector("#back").addEventListener("click", e => {
     e.preventDefault();
     (e.target as HTMLElement).classList.remove("selected");
-    state.page -= 1;
+    page -= 1;
     render();
   });
 
@@ -312,6 +322,10 @@ async function init() {
 
   /* switch control based on keys */
   window.addEventListener("keydown", e => {
+    const t = e.target as HTMLElement;
+    if (t.matches("input,select,button")) {
+      return;
+    }
     if (e.key == "ArrowRight" || e.key == "Space") {
       e.preventDefault();
       moveToNext();

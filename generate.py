@@ -20,10 +20,29 @@ import myArgs
 import math
 from sqlitedict import SqliteDict
 
-args = myArgs.Parse(base=16, Nselect=100, minPages=6, maxPages=20, out=str)
+args = myArgs.Parse(
+    base=16,
+    Nselect=100,
+    minPages=6,
+    maxPages=20,
+    out=str,
+    query="",
+    hasCat=True,
+    hasAudience=True,
+)
 
 # get all the books
 books = json.load(gzip.open("data/books.json.gz", "rt", encoding="utf-8"))
+
+
+def matchesQuery(book, query):
+    """True if the query occurs in the book"""
+    return (
+        query in book["author"]
+        or query in book["title"]
+        or any(query in page["text"] for page in book["pages"])
+    )
+
 
 # get the English books that qualify
 books = [
@@ -31,13 +50,17 @@ books = [
     for book in books
     # is English
     if book["language"] == "en"
+    # satisfies the query if any
+    and (not args.query or matchesQuery(book, args.query))
     # is categorized
-    and len(book["categories"]) > 0
+    and (not args.hasCat or len(book["categories"]) > 0)
     # has an audience
-    and book["audience"] in "EC"
+    and (not args.hasAudience or book["audience"] in "EC")
     # has enough pages or is reviewed
     and (args.minPages < len(book["pages"]) < args.maxPages or book["reviewed"])
 ]
+
+print(len(books))
 
 # break into reviewed and unreviewed
 reviewed = [book for book in books if book["reviewed"]][: args.Nselect]
@@ -226,6 +249,7 @@ for progress, book in enumerate(books):
         )
     pages[-1]["next"] = "#done"
     view["pages"] = pages
+    view["bid"] = bid
     html = pystache.render(template, view)
     os.makedirs(osp.dirname(bpath), exist_ok=True)
     with open(bpath, "wt", encoding="utf-8") as fp:
@@ -262,9 +286,17 @@ for word in wordToSlugs.keys():
     with open(osp.join(WOUT, word), "wt", encoding="utf-8") as fp:
         fp.write("".join(ids))
 
+# make sure CAUTION exists
+with open(osp.join(WOUT, "CAUTION"), "at", encoding="utf-8") as fp:
+    fp.write("")
+
 # write the AllAvailable file
-with open(osp.join(WOUT, 'AllAvailable'), "wt", encoding='utf-8') as fp:
-    fp.write('%s-%s' % ("0" * Dbooks, last))
+with open(osp.join(WOUT, "AllAvailable"), "wt", encoding="utf-8") as fp:
+    fp.write("%s-%s" % ("0" * Dbooks, last))
+
+# write out a list of the images for possible prefetch...
+with open(osp.join(CONTENT, "images.json"), "wt", encoding="utf-8") as fp:
+    json.dump([osp.relpath(path, OUT) for path in imagemap.values()], fp)
 
 # record parameters needed by the js
 config = {
@@ -279,37 +311,35 @@ with open(osp.join(CONTENT, "config.json"), "wt") as fp:
 
 # copy the extras
 for fname in [
-        "book.css",
-        "book.js",
-        "choose.html",
-        "favorites.css",
-        "favorites.html",
-        "favorites.js",
-        "find.css",
-        "find.html",
-        "find.js",
-        "index.css",
-        "index.html",
-        "index.js",
-        "manifest.json",
-        "settings.css",
-        "settings.html",
-        "settings.js",
-        "site.css",
-        "worker.js",
-        "images/BackArrow.png",
-        "images/caution.png",
-        "images/FavoriteNoOverlay.png",
-        "images/favorite.png",
-        "images/FavoriteYesOverlay.png",
-        "images/NextArrow.png",
-        "images/reviewed.png",
-        "images/settings.png",
-        "images/well.png",
+    "book.css",
+    "book.js",
+    "choose.html",
+    "favorites.css",
+    "favorites.html",
+    "favorites.js",
+    "find.css",
+    "find.html",
+    "find.js",
+    "index.css",
+    "index.html",
+    "index.js",
+    "manifest.json",
+    "settings.css",
+    "settings.html",
+    "settings.js",
+    "site.css",
+    "worker.js",
+    "images/BackArrow.png",
+    "images/caution.png",
+    "images/FavoriteNoOverlay.png",
+    "images/favorite.png",
+    "images/FavoriteYesOverlay.png",
+    "images/NextArrow.png",
+    "images/reviewed.png",
+    "images/settings.png",
+    "images/well.png",
 ]:
     if osp.exists(fname):
         opath = osp.join(OUT, fname)
         os.makedirs(osp.dirname(opath), exist_ok=True)
         shutil.copyfile(fname, opath)
-
-

@@ -6,8 +6,8 @@
     "build": "webpack",
     "production": "webpack --mode=production",
     "start": "webpack-dev-server",
-    "noservice": "webpack-dev-server --port=8081",
-    "local": "webpack-dev-server --host 0.0.0.0 --public gb.cs.unc.edu/80",
+    "nosw": "webpack-dev-server --host 0.0.0.0 --public gb.cs.unc.edu --port 8081",
+    "local": "webpack-dev-server --host 0.0.0.0 --public gb.cs.unc.edu",
     "tsc": "tsc",
     "test": "jest"
   },
@@ -30,7 +30,7 @@
     "webpack-dev-server": "^3.7.2"
   },
   "dependencies": {
-    "idb": "^4.0.3",
+    "idb": "^4.0.4",
     "stemr": "^1.0.0"
   },
   "description": ""
