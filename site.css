@@ -107,3 +107,12 @@ h1.title {
   margin-top: 0;
   margin-bottom: 10px;
 }
+
+.js {
+  display: none;
+}
+
+body.has-js .js {
+  display: inherit;
+}
+

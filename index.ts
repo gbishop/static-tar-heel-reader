@@ -1,7 +1,8 @@
 import { registerServiceWorker } from "./start-sw";
 
-async function init(){
-    registerServiceWorker();
+async function init() {
+  document.body.classList.add("has-js");
+  registerServiceWorker();
 }
 
-window.addEventListener('load', init);
+window.addEventListener("load", init);
