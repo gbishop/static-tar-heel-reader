@@ -21,6 +21,7 @@ module.exports = {
     rules: [{ test: /\.ts$/, loader: "ts-loader" }]
   },
   devServer: {
+    watchContentBase: true,
     stats: {
       assets: false,
       hash: false,
