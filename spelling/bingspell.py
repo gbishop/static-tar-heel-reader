@@ -1,9 +1,11 @@
 import requests
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
 
+# Take a sentence as input, access an autocorrect website,
+# correct spelling/grammar errors in the sentecne,
+# and return the corrected sentence.
 def put_sentence(sentence):
     driver = webdriver.Chrome('/Users/chansun/Downloads/chromedriver-2')
     driver.get('https://azure.microsoft.com/en-us/services/cognitive-services/spell-check/')
@@ -11,23 +13,15 @@ def put_sentence(sentence):
     search_box.clear()
     search_box.send_keys(sentence)
     button = driver.find_element_by_xpath("//input[@type='submit']")
-    #driver.implicitly_wait(5)
     driver.execute_script("arguments[0].click();", button)
-    time.sleep(2) # 2 초 대기
+    time.sleep(2.0) # Sleep for 2.0 sec
     correction = driver.find_element_by_id("spell-check-preview").text
-    #print(correction)
-    #req = driver.page_source
-    #soup=BeautifulSoup(req, 'html.parser')
-    #rows = soup.findAll('div', {'class':'cs-demo-json'})
-    #json = rows[0].text.strip()
-    #myDict = eval(json)
-    #print(type(json))
-    #print(type(myDict))
-    #for row in rows:
-    #    print(row.text.strip())
     driver.close()
     return correction
 
+# Take a list of sentences as input, access an autocorrect website,
+# read through every sentence and correct spelling/grammar errors in it,
+# and return the list of corrected sentences.
 def put_sentences(sentences):
     driver = webdriver.Chrome('/Users/chansun/Downloads/chromedriver-2')
     driver.get('https://azure.microsoft.com/en-us/services/cognitive-services/spell-check/')
@@ -37,29 +31,30 @@ def put_sentences(sentences):
         search_box.clear()
         search_box.send_keys(sentence)
         button = driver.find_element_by_xpath("//input[@type='submit']")
-        #driver.implicitly_wait(5)
         driver.execute_script("arguments[0].click();", button)
-        time.sleep(2) # 2 초 대기
+        time.sleep(2.0) # Sleep for 2.0 sec
         correction = driver.find_element_by_id("spell-check-preview").text
         corrections.append(correction)
-        #print(correction)
-        #req = driver.page_source
-        #soup=BeautifulSoup(req, 'html.parser')
-        #rows = soup.findAll('div', {'class':'cs-demo-json'})
-        #json = rows[0].text.strip()
-        #myDict = eval(json)
-        #print(type(json))
-        #print(type(myDict))
     driver.close()
     return corrections
 
-#sentence = "People abandonded fireworks but some people keep fire-works in their homes."
-#print(sentence)
-#print("\n")
-#print(put_sentence(sentence))
+# Access an autocorrect website (initializer),
+# and take a sentence and correct spelling/grammar errors in the sentence (put_sentence method),
+# and close the autocorrect website (close mthod).
+class Bingspell():
+    def __init__(self):
+        self.driver = webdriver.Chrome('/Users/chansun/Downloads/chromedriver-2')
+        self.driver.get('https://azure.microsoft.com/en-us/services/cognitive-services/spell-check/')
+        self.search_box = self.driver.find_element_by_name("Query")
 
-#sentences = ["People abandonded fireworks but some people keep fire-works in their homes.", "Sometimes a small boat makes a good afteroon snack.", "He lectured agaist slavery in the U.S and in Great Britain. He also held government jobs."]
-#for sentence in sentences:
-#    print(sentence)
-#print("\n")
-#print(put_sentences(sentences))
+    def put_sentence(self, sentence):
+        self.search_box.clear()
+        self.search_box.send_keys(sentence)
+        button = self.driver.find_element_by_xpath("//input[@type='submit']")
+        self.driver.execute_script("arguments[0].click();", button)
+        time.sleep(2.0) # Sleep for 2.0 sec
+        correction = self.driver.find_element_by_id("spell-check-preview").text
+        return correction
+
+    def close(self):
+        self.driver.close()
