@@ -2,6 +2,24 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import time
+import re
+import aspell
+import spellchecker
+#from nltk.corpus import stopwords
+import contractions
+
+
+spell = aspell.Speller("lang", "en")
+spell2 = spellchecker.SpellChecker()
+wordRe = re.compile(r"[a-zA-Z]+\'[a-zA-Z]+|[a-zA-Z]+")
+
+
+# Get the dicitonary
+word_dictionary = set()
+with open('dictionary.txt', 'r') as fp:
+    lines = fp.readlines()
+    word_dictionary.update([line.replace("\n", "") for line in lines if line[0] != "#"])
+
 
 # Take a sentence as input, access an autocorrect website,
 # correct spelling/grammar errors in the sentecne,
@@ -55,6 +73,25 @@ class Bingspell():
         time.sleep(2.0) # Sleep for 2.0 sec
         correction = self.driver.find_element_by_id("spell-check-preview").text
         return correction
+
+    def put_book(self, book):
+        for page in book['pages']:
+            page_copy = page['text'].replace("\n", " ")
+            text = contractions.fix(page['text']) ## Replace contractions; e.g., can't --> cannot // won't --> will not
+            text = text.replace("'s", "") ## remove 's (apostrophe and s)
+            words = wordRe.findall(text)
+            # words = [w for w in words if not w in stop_words] ## Remove stop words
+            words = [w for w in words if not w in word_dictionary] ## Remove proper nouns / person's name / onomatopoeia
+            for word in words:
+                if not spell.check(word) and len(spell2.unknown([word])) >= 1:
+                    try:
+                        page['text'] = self.put_sentence(page_copy)
+                        break
+                    except:
+                        print("Exception occured in {0}".format(book['title']))
+                        print("page:\n{0}\n".format(page_copy))
+                        break
+        return book
 
     def close(self):
         self.driver.close()
