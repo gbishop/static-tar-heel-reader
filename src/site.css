@@ -44,12 +44,12 @@ a.back {
 }
 
 a.next {
-  background: no-repeat center/contain url(images/NextArrow.png);
+  background: no-repeat center/contain url("${copy('images/NextArrow.png')}");
   right: 0;
 }
 
 a.back {
-  background: no-repeat center/contain url(images/BackArrow.png);
+  background: no-repeat center/contain url("${copy('images/BackArrow.png')}");
   left: 0;
 }
 
@@ -79,9 +79,10 @@ details {
   font-size: 4px;
 }
 
-details summary img {
+details summary {
   width: 48px;
   height: 48px;
+  background: no-repeat center/contain url("${copy('images/well.png')}");
 }
 
 details nav {
@@ -115,4 +116,3 @@ h1.title {
 body.has-js .js {
   display: inherit;
 }
-

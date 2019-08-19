@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ${include('head.mako', sw=1, css='favorites', js='favorites') }
+    <title>THR | Manage Favorites</title>
+  </head>
+
+  <body>
+    ${include('menu.mako', current='favorites')}
+    <h1 class="title">Manage Favorites</h1>
+    <button id="new">Create new list</button>
+    <ul id="list"></ul>
+    <div id="tools">
+      <button id="read">Read</button>
+      <button id="edit">Edit</button>
+      <button id="rename">Rename</button>
+      <button id="delete">Delete</button>
+    </div>
+  </body>
+</html>

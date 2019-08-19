@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ${include('head.mako', sw=1, css='find', js='find') }
+    <title>THR | Favorites</title>
+  </head>
+
+  <body>
+    ${include('menu.mako', current='favorites')}
+    <h1 class="title">Tar Heel Reader</h1>
+    <ul id="list"></ul>
+    <a id="back" class="back">Back</a>
+    <a id="next" class="next">Next</a>
+  </body>
+</html>

@@ -4,11 +4,11 @@
   "main": "find.js",
   "scripts": {
     "build": "webpack",
-    "production": "webpack --mode=production",
-    "start": "webpack-dev-server",
-    "nosw": "webpack-dev-server --host 0.0.0.0 --public gb.cs.unc.edu --port 8081",
-    "local": "webpack-dev-server --host 0.0.0.0 --public gb.cs.unc.edu",
-    "tsc": "tsc",
+    "production": "webpack  --config webpack.prod.js --mode=production",
+    "start": "webpack-dev-server --config webpack.dev.js",
+    "nosw": "webpack-dev-server --config webpack.dev.js --host 0.0.0.0 --public gb.cs.unc.edu --port 8081",
+    "local": "webpack-dev-server --config webpack.dev.js --host 0.0.0.0 --public gb.cs.unc.edu",
+    "tsc": "tsc --lib dom,es6,dom.iterable,scripthost",
     "test": "jest"
   },
   "test": "jest",
@@ -33,10 +33,5 @@
     "idb": "^4.0.4",
     "stemr": "^1.0.0"
   },
-  "description": "",
-  "jest": {
-    "watchPathIgnorePatterns": [
-      "node_modules"
-    ]
-  }
+  "description": ""
 }

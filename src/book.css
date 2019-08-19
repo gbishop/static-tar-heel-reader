@@ -1,15 +1,15 @@
-@import url('site.css');
+@import url("${copy('site.css')}");
 
 body {
   padding: 0;
   margin: 0;
 }
 
-body[data-buttonsize='small'] section {
+body[data-buttonsize="small"] section {
   width: 100%;
 }
 
-body[data-buttonsize='large'] section {
+body[data-buttonsize="large"] section {
   width: calc(100% - 6rem);
   margin-left: 3rem;
 }
@@ -59,7 +59,7 @@ h1 {
   font-size: 2em;
 }
 
-body[data-buttonsize='small'] p {
+body[data-buttonsize="small"] p {
   width: calc(100% - 6rem);
 }
 

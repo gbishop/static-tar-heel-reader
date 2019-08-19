@@ -18,3 +18,8 @@ label {
 input {
   width: 2em;
 }
+
+div#controls {
+  width: 25em;
+  margin: 0 auto;
+}

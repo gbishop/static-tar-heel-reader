@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """Generate core of static thr
 
 Experiment with allowing variable base
@@ -5,7 +6,8 @@ Experiment with allowing variable base
 
 import gzip
 import json
-import pystache
+from mako.template import Template
+from mako import exceptions
 import os
 import os.path as osp
 import itertools
@@ -19,6 +21,7 @@ import pandas as pd
 import myArgs
 import math
 from sqlitedict import SqliteDict
+from copypage import CopyPage
 
 args = myArgs.Parse(
     base=16,
@@ -29,10 +32,24 @@ args = myArgs.Parse(
     query="",
     hasCat=True,
     hasAudience=True,
+    useSW=True,
+    dev=True,
 )
+
+cp = CopyPage(dev=args.dev)
 
 # get all the books
 books = json.load(gzip.open("data/books.json.gz", "rt", encoding="utf-8"))
+
+
+def render(template, view):
+    """Render a template with traceback"""
+    try:
+        html = Template(template).render(**view)
+    except Exception:
+        print(exceptions.text_error_template().render())
+        raise
+    return html
 
 
 def matchesQuery(book, query):
@@ -198,7 +215,7 @@ def imgurl(url, bid, bpath):
 
 # write the books copying the images
 ndx = []
-template = open("book.mustache").read()
+template = open("src/book.mako").read()
 lastReviewed = None
 for progress, book in enumerate(books):
     if progress % 100 == 0:
@@ -250,7 +267,9 @@ for progress, book in enumerate(books):
     pages[-1]["next"] = "#done"
     view["pages"] = pages
     view["bid"] = bid
-    html = pystache.render(template, view)
+    view["css"] = osp.relpath(osp.join(OUT, cp.copy("book.css")), osp.dirname(bpath))
+    view["js"] = osp.relpath(osp.join(OUT, cp.link("book.js")), osp.dirname(bpath))
+    html = render(template, view)
     os.makedirs(osp.dirname(bpath), exist_ok=True)
     with open(bpath, "wt", encoding="utf-8") as fp:
         fp.write(html)
@@ -258,7 +277,7 @@ for progress, book in enumerate(books):
 print("last reviewed", lastReviewed)
 
 # write the index.htmls
-itemplate = open("index.mustache").read()
+itemplate = open("src/book-index.mako").read()
 ipaths = sorted(set(b["path"] for b in ndx))
 start = osp.join(CONTENT, "index.html")
 back = start
@@ -269,9 +288,10 @@ for path, group in itertools.groupby(ndx, lambda v: v["path"]):
         books=group,
         back=osp.relpath(back, osp.dirname(path)),
         next=osp.relpath(ipaths[i] if i < len(ipaths) else start, osp.dirname(path)),
+        css=osp.relpath(osp.join(OUT, "index.css"), path),
     )
     with open(path, "wt", encoding="utf-8") as fp:
-        fp.write(pystache.render(itemplate, view))
+        fp.write(render(itemplate, view))
     back = path
     i += 1
 
@@ -308,38 +328,3 @@ config = {
 }
 with open(osp.join(CONTENT, "config.json"), "wt") as fp:
     json.dump(config, fp)
-
-# copy the extras
-for fname in [
-    "book.css",
-    "book.js",
-    "choose.html",
-    "favorites.css",
-    "favorites.html",
-    "favorites.js",
-    "find.css",
-    "find.html",
-    "find.js",
-    "index.css",
-    "index.html",
-    "index.js",
-    "manifest.json",
-    "settings.css",
-    "settings.html",
-    "settings.js",
-    "site.css",
-    "worker.js",
-    "images/BackArrow.png",
-    "images/caution.png",
-    "images/FavoriteNoOverlay.png",
-    "images/favorite.png",
-    "images/FavoriteYesOverlay.png",
-    "images/NextArrow.png",
-    "images/reviewed.png",
-    "images/settings.png",
-    "images/well.png",
-]:
-    if osp.exists(fname):
-        opath = osp.join(OUT, fname)
-        os.makedirs(osp.dirname(opath), exist_ok=True)
-        shutil.copyfile(fname, opath)

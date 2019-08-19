@@ -2,11 +2,7 @@
 <html lang="en">
   <head>
     <title>Tar Heel Reader</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="manifest" href="manifest.json" />
-    <meta name="theme-color" content="#99badd" />
-    <link rel="stylesheet" href="site.css" />
+    ${include('head.mako', sw=1, css='index', js='index') }
     <style>
       body {
         margin: 2em auto;
@@ -26,17 +22,9 @@
         text-shadow: 0.05em 0.05em 0.05em white;
       }
     </style>
-    <script src="index.js"></script>
   </head>
   <body>
-    <details class="js">
-      <summary title="menu"><img src="images/well.png" alt="menu"/></summary>
-      <nav>
-        <a href="favorites.html">Favorites</a>
-        <a href="find.html">Find</a>
-        <a href="settings.html">Settings</a>
-      </nav>
-    </details>
+    ${include('menu.mako', current='')}
     <h1 class="title">Tar Heel Reader</h1>
     <h2>Welcome</h2>
     <p>

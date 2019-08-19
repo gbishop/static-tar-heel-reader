@@ -7,13 +7,6 @@ declare const workbox: typeof import("workbox-sw");
 workbox.loadModule("workbox-strategies");
 workbox.loadModule("workbox-precaching");
 
-
-self.addEventListener("install", (event) => {
-  // Calling claim() on clients results in DOM Error.
-  // But skipWaiting() alone seems to do the job.
-  (self as any).skipWaiting();
-});
-
 workbox.routing.registerRoute(
   /.jpg|.png/,
   new workbox.strategies.CacheFirst({

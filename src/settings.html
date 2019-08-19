@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    ${include('head.mako', sw=1, css='settings', js='settings') }
+    <title>Settings</title>
+  </head>
+  <body>
+    ${include('menu.mako', current='favorites')}
+    <div id="controls">
+      <h1 class="title">Settings</h1>
+      <label>
+        <input name="bpp" type="number" min="1" max="30" value="12" />
+        Books per page
+      </label>
+      <label>
+        <select name="page">
+          <option value="#000">black</option>
+          <option value="#00f">blue</option>
+          <option value="#0f0">green</option>
+          <option value="#0ff">cyan</option>
+          <option value="#f00">red</option>
+          <option value="#f0f">magenta</option>
+          <option value="#ff0">yellow</option>
+          <option value="#fff" selected>white</option>
+        </select>
+        Page color
+      </label>
+      <label>
+        <select name="text">
+          <option value="#000" selected>black</option>
+          <option value="#00f">blue</option>
+          <option value="#0f0">green</option>
+          <option value="#0ff">cyan</option>
+          <option value="#f00">red</option>
+          <option value="#f0f">magenta</option>
+          <option value="#ff0">yellow</option>
+          <option value="#fff">white</option>
+        </select>
+        Text color
+      </label>
+      <label>
+        <select name="buttons">
+          <option value="small" selected>small</option>
+          <option value="large">large</option>
+          <option value="none">none</option>
+        </select>
+        Button size
+      </label>
+      <label>
+        <select name="voices">
+          <option value="silent">Silent</option>
+        </select>
+        Voice
+      </label>
+      <button id="close">Done</button>
+    </div>
+  </body>
+</html>
