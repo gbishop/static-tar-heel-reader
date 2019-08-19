@@ -33,5 +33,10 @@
     "idb": "^4.0.4",
     "stemr": "^1.0.0"
   },
-  "description": ""
+  "description": "",
+  "jest": {
+    "watchPathIgnorePatterns": [
+      "node_modules"
+    ]
+  }
 }
