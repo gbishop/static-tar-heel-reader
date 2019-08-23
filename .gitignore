@@ -2,7 +2,6 @@
 *.gz
 *.swp
 node_modules
-*.js
 *.js.map
 *.sqlite
 dist

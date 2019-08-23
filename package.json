@@ -31,7 +31,8 @@
   },
   "dependencies": {
     "idb": "^4.0.4",
-    "stemr": "^1.0.0"
+    "stemr": "^1.0.0",
+    "workbox-webpack-plugin": "^4.3.1"
   },
   "description": ""
 }

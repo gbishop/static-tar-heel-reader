@@ -273,6 +273,7 @@ async function init() {
   config = await (await fetch("content/config.json")).json();
 
   /* register service worker. */
+  console.log('init');
   registerServiceWorker();
 
   const form = document.querySelector("form");

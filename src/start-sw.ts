@@ -1,8 +1,8 @@
 // Registers service worker.
 
 export function registerServiceWorker() {
+    console.log('here');
   if ("serviceWorker" in navigator) {
-    return;
     if (location.host === "localhost:8081") {
       console.log("skipping service worker");
       return;
