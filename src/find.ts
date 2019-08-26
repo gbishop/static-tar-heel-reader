@@ -43,6 +43,20 @@ import {
 
 import speak from "./speech";
 
+import { openDB, DBSchema } from "idb";
+
+interface ICover {
+  id: string;
+  html: string;
+}
+
+interface CoverDB extends DBSchema {
+  covers: {
+    key: string;
+    value: ICover;
+  };
+}
+
 function getQueryTerms(): string[] {
   const searchBox = document.querySelector("#search") as HTMLInputElement;
   const query = searchBox.value;
@@ -78,15 +92,38 @@ async function getBookCover(bid: string): Promise<HTMLElement | null> {
       .slice(0, -1)
       .join("/") +
     "/";
-  // fetch the index
-  const resp = await fetch(prefix + "index.html");
-  // get the html
-  const html = await resp.text();
-  // parse it
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-  // get the entry for this book
-  const item = doc.getElementById(bid);
+  const db = await openDB<CoverDB>("Covers", 1, {
+    upgrade(db) {
+      const store = db.createObjectStore("covers", {
+        keyPath: "id"
+      });
+    }
+  });
+  // see if we have it in the db
+  const itemEntry = await db.get("covers", bid);
+  let item = null;
+  if (!itemEntry) {
+    // fetch the index
+    const resp = await fetch(prefix + "index.html");
+    // get the html
+    const html = await resp.text();
+    // parse it
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
+    // cache all the items from this page
+    const tx = db.transaction("covers", "readwrite");
+    for (const li of doc.querySelectorAll("li")) {
+      if (li.id === bid) {
+        item = <HTMLElement>li;
+      }
+      tx.store.add({ id: li.id, html: li.outerHTML });
+    }
+    await tx.done;
+  } else {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(itemEntry.html, "text/html");
+    item = doc.getElementById(bid);
+  }
   if (item) {
     // fix the image URL
     const img: HTMLImageElement = item.querySelector("img");
@@ -151,14 +188,12 @@ async function find() {
         }
         displayedIds.push(id);
       }
-      console.log("page", displayedIds[displayedIds.length - 1]);
       if (displayedIds[displayedIds.length - 1] >= backFrom) break;
     }
     page = Math.max(
       0,
       Math.floor(displayedIds.length / state.booksPerPage) - 1
     );
-    console.log("page", page);
   }
   return render();
 }
@@ -273,7 +308,6 @@ async function init() {
   config = await (await fetch("content/config.json")).json();
 
   /* register service worker. */
-  console.log('init');
   registerServiceWorker();
 
   const form = document.querySelector("form");
