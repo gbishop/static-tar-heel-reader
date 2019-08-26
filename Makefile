@@ -26,3 +26,6 @@ tiny: production
 	rm /var/www/static/tiny/*.js /var/www/static/tiny/*.css
 	./generate.py out=/var/www/static/tiny Nselect=100 dev=0
 	cp -a dist/* /var/www/static/tiny/
+
+dev: pages
+	./generate.py out=/var/www/static/tiny Nselect=100 dev=1
