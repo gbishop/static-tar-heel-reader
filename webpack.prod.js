@@ -11,23 +11,8 @@ module.exports = [
       book: "./src/book.ts",
       index: "./src/index.ts",
       settings: "./src/settings.ts",
-      favorites: "./src/favorites.ts"
-    },
-    output: {
-      filename: "[name].[chunkhash:6].js",
-      path: path.resolve(__dirname, "dist")
-    },
-    module: {
-      rules: [{ test: /\.ts$/, loader: "ts-loader" }]
-    }
-  },
-  {
-    resolve: {
-      extensions: [".ts", ".js"]
-    },
-    mode: "production",
-    entry: {
-      worker: "./src/service-worker.ts"
+      favorites: "./src/favorites.ts",
+      worker: "./src/worker.ts"
     },
     output: {
       filename: "[name].js",
@@ -35,6 +20,9 @@ module.exports = [
     },
     module: {
       rules: [{ test: /\.ts$/, loader: "ts-loader" }]
+    },
+    optimization: {
+      minimize: false
     }
   }
 ];

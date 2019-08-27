@@ -32,11 +32,9 @@ args = myArgs.Parse(
     query="",
     hasCat=True,
     hasAudience=True,
-    useSW=True,
-    dev=True,
 )
 
-cp = CopyPage(dev=args.dev)
+cp = CopyPage()
 
 # get all the books
 books = json.load(gzip.open("data/books.json.gz", "rt", encoding="utf-8"))
