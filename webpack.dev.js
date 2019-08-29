@@ -9,7 +9,7 @@ module.exports = {
     find: "./src/find.ts",
     book: "./src/book.ts",
     index: "./src/index.ts",
-    worker: "./src/service-worker.ts",
+    worker: "./src/worker.ts",
     settings: "./src/settings.ts",
     favorites: "./src/favorites.ts"
   },
