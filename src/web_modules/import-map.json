@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "idb": "./idb.js",
+    "stemr": "./stemr.js"
+  }
+}

@@ -1,8 +1,7 @@
 *.sqlite
 *.gz
 *.swp
-node_modules
 *.js.map
 *.sqlite
 dist
-web_modules
+__pycache__
