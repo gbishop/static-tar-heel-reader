@@ -2,18 +2,11 @@
   "name": "thr",
   "version": "1.0.0",
   "scripts": {
-    "prepare": "pika-web"
+    "prepare": "pika-web --dest=src/web_modules"
   },
   "test": "jest",
   "devDependencies": {
-    "@pika/web": "^0.3.2",
-    "@types/jest": "^24.0.18",
-    "jest": "^24.9.0",
-    "stylelint": "^10.1.0",
-    "stylelint-config-prettier": "^5.2.0",
-    "stylelint-config-standard": "^18.3.0",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.5.2"
+    "@types/jest": "^24.0.18"
   },
   "dependencies": {
     "idb": "^4.0.4",

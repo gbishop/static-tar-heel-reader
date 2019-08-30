@@ -1,4 +1,4 @@
-pages: dist/find.html dist/settings.html dist/favorites.html dist/choose.html dist/index.html
+pages: dist/find.html dist/settings.html dist/favorites.html dist/choose.html dist/index.html dist/web_modules/stemr.js dist/web_modules/idb.js
 
 dist/%.html: src/%.html
 	./copypage.py $<
@@ -13,25 +13,25 @@ dist/index.html: src/index.html src/index.css src/head.mako
 
 dist/favorites.html: src/favorites.html src/favorites.css src/head.mako
 
+dist/web_modules/stemr.js: src/web_modules/stemr.js
+	mkdir -p dist/web_modules
+	cp $< $@
+
+dist/web_modules/idb.js: src/web_modules/idb.js
+	mkdir -p dist/web_modules
+	cp $< $@
+
 watch:
 	fswatch -o src -e ".*\\.swp" --event=Created --event=Updated --latency=2 | xargs -n1 -I{} $(MAKE) --no-print-directory
 
-dist/%.js: src/%.ts
-	npm run production
-
-production: dist/find.js dist/book.js dist/favorites.js dist/index.js dist/worker.js
-	$(MAKE) pages
-
-tiny: production
+tiny: pages
 	rm -f /var/www/static/tiny/*.js /var/www/static/tiny/*.css
 	./generate.py out=/var/www/static/tiny Nselect=100
 	cp -a dist/* /var/www/static/tiny/
-
-dev: pages
-	./generate.py out=/var/www/static/tiny Nselect=100
+	cp -a web_modules /var/www/static
 
 test:
 	jest src
 
 install-dev:
-	npm install -g typescript jest test-jest
+	npm install -g typescript jest test-jest stylelint stylelint-config-prettier stylelint-config-standard @pika/web

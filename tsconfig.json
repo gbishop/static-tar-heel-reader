@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2019",
+    "module": "es6",
     "moduleResolution": "node",
     "rootDir": "./src",
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "../web_modules/*.js": ["node_modules/*", "web_modules/*.js"]
+      "./web_modules/*.js": ["node_modules/*", "web_modules/*.js"]
     }
   }
 }

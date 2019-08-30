@@ -1,6 +1,6 @@
 /* implement choosing favorites */
 
-import { openDB, DBSchema } from "../web_modules/idb.js";
+import { openDB, DBSchema } from "./web_modules/idb.js";
 import state from "./state.js";
 import { registerServiceWorker } from "./start-sw.js";
 

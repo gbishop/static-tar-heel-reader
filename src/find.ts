@@ -25,7 +25,7 @@ let config: Config;
 // persistant state
 import state from "./state.js";
 // porter2 stemmer
-import { stem } from "../web_modules/stemr.js";
+import { stem } from "./web_modules/stemr.js";
 
 import swipe from "./swipe.js";
 
@@ -43,7 +43,7 @@ import {
 
 import speak from "./speech.js";
 
-import { openDB, DBSchema } from "../web_modules/idb.js";
+import { openDB, DBSchema } from "./web_modules/idb.js";
 
 interface ICover {
   id: string;
