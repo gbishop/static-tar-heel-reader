@@ -9,7 +9,9 @@ dist/choose.html: src/choose.html src/find.css src/head.mako src/menu.mako
 
 dist/settings.html: src/settings.html src/settings.css src/head.mako src/menu.mako
 
-dist/index.html: src/index.html src/index.css
+dist/index.html: src/index.html src/index.css src/head.mako
+
+dist/favorites.html: src/favorites.html src/favorites.css src/head.mako
 
 watch:
 	fswatch -o src -e ".*\\.swp" --event=Created --event=Updated --latency=2 | xargs -n1 -I{} $(MAKE) --no-print-directory
@@ -27,3 +29,9 @@ tiny: production
 
 dev: pages
 	./generate.py out=/var/www/static/tiny Nselect=100
+
+test:
+	jest src
+
+install-dev:
+	npm install -g typescript jest test-jest

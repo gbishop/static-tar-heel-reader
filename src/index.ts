@@ -1,4 +1,4 @@
-import { registerServiceWorker } from "./start-sw";
+import { registerServiceWorker } from "./start-sw.js";
 
 async function init() {
   document.body.classList.add("has-js");

@@ -13,4 +13,4 @@
 <link rel="stylesheet" href="${copy('site.css')}" />
 <link rel="stylesheet" href="${copy(css + '.css')}" />
 % endif
-<script src="${link(js + '.js')}"></script>
+<script type="module" src="${link(js + '.js')}"></script>

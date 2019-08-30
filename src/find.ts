@@ -23,13 +23,13 @@ interface Config {
 let config: Config;
 
 // persistant state
-import state from "./state";
+import state from "./state.js";
 // porter2 stemmer
-import { stem } from "stemr";
+import { stem } from "../web_modules/stemr.js";
 
-import swipe from "./swipe";
+import swipe from "./swipe.js";
 
-import { registerServiceWorker } from "./start-sw";
+import { registerServiceWorker } from "./start-sw.js";
 
 import {
   BookSet,
@@ -39,11 +39,11 @@ import {
   RangeSet,
   StringSet,
   ArraySet
-} from "./BookSet";
+} from "./BookSet.js";
 
-import speak from "./speech";
+import speak from "./speech.js";
 
-import { openDB, DBSchema } from "idb";
+import { openDB, DBSchema } from "../web_modules/idb.js";
 
 interface ICover {
   id: string;

@@ -1,8 +1,8 @@
 /* code used in each book */
 
-import state from "./state";
-import swipe from "./swipe";
-import speak from "./speech";
+import state from "./state.js";
+import swipe from "./swipe.js";
+import speak from "./speech.js";
 
 window.addEventListener("load", () => {
   /* restore page and text color */

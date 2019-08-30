@@ -1,8 +1,8 @@
 /* implement choosing favorites */
 
-import { openDB, DBSchema } from "idb";
-import state from "./state";
-import { registerServiceWorker } from "./start-sw";
+import { openDB, DBSchema } from "../web_modules/idb.js";
+import state from "./state.js";
+import { registerServiceWorker } from "./start-sw.js";
 
 interface IFavorites {
   id?: number;

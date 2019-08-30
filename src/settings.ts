@@ -1,5 +1,5 @@
-import state from "./state";
-import { getVoices } from "./speech";
+import state from "./state.js";
+import { getVoices } from "./speech.js";
 
 function initControl(
   selector: string,

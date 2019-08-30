@@ -2,7 +2,7 @@ importScripts(
   "https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js"
 );
 
-declare const workbox: typeof import("workbox-sw");
+declare const workbox: any;
 
 workbox.loadModule("workbox-strategies");
 workbox.loadModule("workbox-precaching");
