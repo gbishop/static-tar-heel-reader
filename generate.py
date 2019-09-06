@@ -32,12 +32,14 @@ args = myArgs.Parse(
     query="",
     hasCat=True,
     hasAudience=True,
+    images="/archives/tarheelreader/production",
+    books="data/books.json.gz",
 )
 
 cp = CopyPage()
 
 # get all the books
-books = json.load(gzip.open("data/books.json.gz", "rt", encoding="utf-8"))
+books = json.load(gzip.open(args.books, "rt", encoding="utf-8"))
 
 
 def render(template, view):
@@ -206,7 +208,7 @@ def imgurl(url, bid, bpath):
         r = encode(i, Dpictures)
         path = osp.join(CONTENT, *r) + ".jpg"
         os.makedirs(osp.dirname(path), exist_ok=True)
-        shutil.copyfile("/archives/tarheelreader/production" + url, path)
+        shutil.copyfile(args.images + url, path)
         imagemap[url] = path
     return osp.relpath(path, osp.dirname(bpath))
 
