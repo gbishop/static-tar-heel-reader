@@ -8,7 +8,7 @@ sizes, and limited computation. I chose to give each book a unique ID encoded in
 with _reviewed_ books first because we want to feature those.
 
 The index for a word simply lists the book ids as a string. For example, the
-index for the word "did" is `3C5475ACAF` with 2-digit book ideas encoded in
+index for the word "did" is `3C5475ACAF` with 2-digit book ids encoded in
 base 16. "did" occurs in 6 books in that tiny 100-book collection.
 
 ### Issues
@@ -17,13 +17,15 @@ base 16. "did" occurs in 6 books in that tiny 100-book collection.
    index for "did" is in the file index/did. This will, no doubt, cause problems
    when we try to include languages with unicode characters. Perhaps we should
    hash the word and use that for the filename?
-2. This coding is inefficient with lots of leading zeros wasting space. Can we
+2. I store categories as 4-letter "words" in uppercase. This has to change.
+3. This coding is inefficient with lots of leading zeros wasting space. Can we
    easily do better?
-3. Should we consider using a higher base for the ids and then translating when
+4. Should we consider using a higher base for the ids and then translating when
    we go to the URL?
-4. Is there some better approach? This is the first thing I thought of that
+5. Is there some better approach? This is the first thing I thought of that
    allowed incremental results.
-5. What order should they be in? Popularity?
+6. What order should they be in? Popularity?
+7. Which words should not be indexed?
 
 ## BookSet.ts
 
